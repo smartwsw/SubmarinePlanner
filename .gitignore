@@ -1,0 +1,5 @@
+node_modules/
+_verify/
+_verify_server.log
+*.log
+.claude/

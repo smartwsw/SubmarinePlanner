@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>潜水艇规划器</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark">⚓</span>
+      <div>
+        <h1>潜水艇规划器</h1>
+        <p>部队潜水艇 · 配置 / 航点 / 升级规划</p>
+      </div>
+    </div>
+    <div class="topbar-actions">
+      <span id="source-badge" class="badge">正在读取 AutoRetainer…</span>
+      <button id="refresh-btn" class="btn">重新读取</button>
+      <button id="export-btn" class="btn">导出配置</button>
+      <label class="btn btn-file">
+        导入数据
+        <input id="import-input" type="file" accept="application/json" hidden />
+      </label>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="panel">
+      <section class="section">
+        <h2>潜水艇</h2>
+        <div id="vessel-list" class="vessel-list"></div>
+      </section>
+
+      <section class="section">
+        <h2>服务器</h2>
+        <div id="world-view" class="world-view"></div>
+      </section>
+
+      <section class="section">
+        <h2>配件</h2>
+        <div id="parts-editor" class="parts-editor"></div>
+      </section>
+
+      <section class="section">
+        <h2>属性</h2>
+        <div id="stats-view" class="stats-view"></div>
+      </section>
+
+      <section class="section">
+        <h2>等级</h2>
+        <div id="level-view" class="level-view"></div>
+      </section>
+    </aside>
+
+    <main class="panel panel-main">
+      <div class="plan-header">
+        <h2>航点规划</h2>
+        <div class="plan-controls">
+          <label class="field">
+            海域
+            <select id="map-filter"></select>
+          </label>
+          <label class="field">
+            目标时长
+            <select id="duration-target">
+              <option value="24">24 小时</option>
+              <option value="48">48 小时</option>
+              <option value="72">72 小时</option>
+            </select>
+          </label>
+          <button id="add-route-btn" class="btn btn-primary">生成路线</button>
+          <button id="clear-btn" class="btn">清除</button>
+        </div>
+      </div>
+
+      <div class="summary">
+        <div id="summary-route" class="summary-box"></div>
+        <div id="summary-levels" class="summary-box"></div>
+      </div>
+
+      <div id="loot-view" class="loot-view"></div>
+
+      <div class="table-wrap">
+        <table id="sector-table" class="sector-table">
+          <thead>
+            <tr>
+              <th class="col-check"><input id="select-all" type="checkbox" /></th>
+              <th>航点</th>
+              <th>海域</th>
+              <th>需求等级</th>
+              <th>解锁自</th>
+              <th>调查耗时</th>
+              <th>经验</th>
+              <th>青磷水</th>
+              <th>掉落估值</th>
+              <th>状态</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+
+  <footer class="footer">
+    <span>潜水艇配置来自 AutoRetainer（也可手动添加）；航点等级/经验/青磷水/坐标来自游戏数据表（xivapi SubmarineExploration），解锁关系来自 AutoRetainer Unlocks。航程按当前配件速度实时估算，含 12 小时固定航时。</span>
+  </footer>
+
+  <script src="./app.js"></script>
+</body>
+</html>
