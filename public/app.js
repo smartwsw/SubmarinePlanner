@@ -1659,6 +1659,9 @@ async function boot() {
 
   renderFilters();
   $('#duration-target').value = String(state.cycleHours);
+  // Reading AutoRetainer is the one thing static hosting cannot do; the badge already explains
+  // where the sample comes from, so hide the button that would just re-run the same fallback.
+  if (state.standalone) $('#refresh-btn').hidden = true;
   renderAll();
 
   $('#refresh-btn').addEventListener('click', async () => {
