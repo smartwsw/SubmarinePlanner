@@ -698,6 +698,24 @@ function needsMarketPrice(itemId) {
   return !VENDOR_PRICES[itemId];
 }
 
+// Universalis 的 regularSaleVelocity 在大区查询下已经是整个大区的日成交件数（不是挂牌数），
+// 所以这里不需要再按服务器换算。低于这个量的物品挂在市场上要很久才卖得掉，卡片标红提醒，
+// 但估值照常计算——成交慢不代表不值钱。
+const LOW_VOLUME_PER_DAY = 5;
+
+// 返回该物品的大区日成交量，取不到时返回 null（不显示警告，而不是假装是 0）。
+function saleVelocity(itemId) {
+  if (!needsMarketPrice(itemId)) return null;
+  const hit = state.prices && state.prices[itemId];
+  if (!hit) return null;
+  return Number(hit.units) || 0;
+}
+
+function isSlowMoving(itemId) {
+  const velocity = saleVelocity(itemId);
+  return velocity !== null && velocity < LOW_VOLUME_PER_DAY;
+}
+
 // Gil from one visit to a sector: every unlocked pool contributes its own draw, and meeting the
 // favour line doubles it. Items worth less than MIN_UNIT_VALUE are dropped from the sum so bulk
 // raw materials do not crowd out the gear that actually pays.
@@ -1129,14 +1147,19 @@ function renderLoot(ordered, stats, costs) {
 
   const grid = el('div', 'loot-grid');
   for (const r of list.slice(0, 12)) {
-    const box = el('div', `loot-item${r === list[0] ? ' top' : ''}`);
+    const slow = isSlowMoving(r.id);
+    const box = el('div', `loot-item${r === list[0] ? ' top' : ''}${slow ? ' slow' : ''}`);
     box.append(el('div', 'loot-name', r.name || `#${r.id}`));
     box.append(
       el('div', 'loot-value', `${r.units.toFixed(1)} 个 × ${fmt(Math.round(r.price))} = `),
     );
     const strong = el('b', null, `${fmt(Math.round(r.units * r.price))} gil`);
     box.lastChild.append(strong);
-    box.append(el('div', 'vessel-meta', `来自 ${r.sector.code} ${r.sector.name}${r.vendor ? ' · 商店回收价' : ''}`));
+    const velocity = saleVelocity(r.id);
+    let note = `来自 ${r.sector.code} ${r.sector.name}${r.vendor ? ' · 商店回收价' : ''}`;
+    if (slow) note += ` · 大区日成交 ${velocity.toFixed(1)} 件，较难出手`;
+    box.append(el('div', 'vessel-meta', note));
+    if (slow) box.title = `该物品整个大区日均成交 ${velocity.toFixed(1)} 件，低于 ${LOW_VOLUME_PER_DAY} 件。估值仍按市场价计算，但实际卖出可能很慢。`;
     grid.append(box);
   }
   host.append(grid);

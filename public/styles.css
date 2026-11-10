@@ -503,6 +503,15 @@ input[type="checkbox"] {
   border-color: rgba(79, 182, 255, 0.45);
 }
 
+/* 大区成交量过低的物品：市场上有价无市，标红提醒，但估值不变。 */
+.loot-item.slow {
+  border-color: rgba(255, 107, 122, 0.65);
+}
+
+.loot-item.slow .vessel-meta {
+  color: rgba(255, 107, 122, 0.85);
+}
+
 .loot-name {
   font-size: 13px;
   overflow: hidden;
