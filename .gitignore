@@ -1,5 +1,6 @@
 node_modules/
 _verify/
+_verify2/
 _verify_server.log
 *.log
 .claude/

@@ -40,6 +40,10 @@ const state = {
   priceError: '',
   marketDcs: [],
   cycleHours: 24,
+  // Static hosting has no server.js, so there is no AutoRetainer config and no price proxy.
+  // Detected once at boot: the UI then runs on the built-in sample vessel and calls
+  // Universalis directly (it allows cross-origin reads).
+  standalone: false,
 };
 
 // Universalis 的国服大区 → 世界表。只在取价时用来把世界映射到大区，界面直接列这张表。
@@ -228,6 +232,14 @@ function vesselKey(v) {
 
 function worldOf(v) {
   return state.world || (v && v.world) || '';
+}
+
+// 世界 → 大区。静态模式下没有服务端帮忙映射，这张表就是唯一依据；表外的世界按原名直接查。
+function dcOf(world) {
+  for (const [dc, worlds] of Object.entries(DC_WORLDS)) {
+    if (worlds.includes(world)) return dc;
+  }
+  return world;
 }
 
 /* ---------- rendering ---------- */
@@ -754,11 +766,9 @@ async function ensurePrices(ids, { force = false } = {}) {
   if (!missing.length) return;
   const world = worldOf(activeVessel());
   if (!world) return;
-  const url = `/api/prices?worlds=${encodeURIComponent(world)}&ids=${missing.join(',')}${
-    force ? '&force=1' : ''
-  }`;
-  const res = await fetch(url, { cache: 'no-store' });
-  const body = await res.json();
+  const body = state.standalone
+    ? await fetchPricesDirect(world, missing)
+    : await fetchPricesProxied(world, missing, force);
   if (!body.ok) throw new Error(body.error || '价格读取失败');
   for (const [id, value] of Object.entries(body.prices || {})) {
     state.prices[id] = value;
@@ -768,6 +778,70 @@ async function ensurePrices(ids, { force = false } = {}) {
   state.pricesFetchedAt = Date.now();
   state.marketDcs = body.dcs || [];
   persist();
+}
+
+async function fetchPricesProxied(world, ids, force) {
+  const url = `/api/prices?worlds=${encodeURIComponent(world)}&ids=${ids.join(',')}${
+    force ? '&force=1' : ''
+  }`;
+  const res = await fetch(url, { cache: 'no-store' });
+  return await res.json();
+}
+
+// Static hosting: Universalis sends `access-control-allow-origin: *`, so the browser can query it
+// directly. Same shape as the proxy, so callers do not care which path ran.
+async function fetchPricesDirect(world, ids) {
+  const dc = dcOf(world);
+  const prices = {};
+  const updatedAt = {};
+  const at = Date.now();
+
+  const absorb = (body) => {
+    for (const [id, v] of Object.entries(body.items || {})) {
+      const listingMedian = median((v.listings || []).map((l) => Number(l.pricePerUnit) || 0).filter(Boolean));
+      const sold = Number(v.averagePrice) || 0;
+      prices[id] = {
+        avg: sold > 0 ? sold : listingMedian,
+        sold: sold > 0,
+        listing: listingMedian,
+        min: Number(v.minPrice) || 0,
+        units: Number(v.regularSaleVelocity) || 0,
+      };
+      updatedAt[id] = at;
+    }
+  };
+
+  const request = async (chunk) => {
+    const url = `https://universalis.app/api/v2/${encodeURIComponent(dc)}/${chunk.join(',')}?listings=20&entries=20`;
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    absorb(await res.json());
+  };
+
+  // One unknown id fails the whole batch, so split and retry instead of giving up.
+  const fetchRange = async (chunk) => {
+    if (!chunk.length) return;
+    try {
+      await request(chunk);
+    } catch (_) {
+      if (chunk.length === 1) return;
+      const mid = Math.ceil(chunk.length / 2);
+      await fetchRange(chunk.slice(0, mid));
+      await fetchRange(chunk.slice(mid));
+    }
+  };
+
+  const chunks = [];
+  for (let i = 0; i < ids.length; i += 50) chunks.push(ids.slice(i, i + 50));
+  await Promise.all(chunks.map(fetchRange));
+  return { ok: true, dcs: [dc], prices, updatedAt };
+}
+
+function median(values) {
+  if (!values.length) return 0;
+  const sorted = [...values].sort((a, b) => a - b);
+  const mid = Math.floor(sorted.length / 2);
+  return sorted.length % 2 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
 }
 
 function vesselStats(v) {
@@ -1440,8 +1514,35 @@ async function generateRoute() {
 /* ---------- data loading ---------- */
 
 // AutoRetainer 的潜艇按部队槽位排列；配置相同的几条在列表里合并显示。
+// Static hosting cannot read a local AutoRetainer config, so the page starts on a plausible
+// maxed-out boat the user can edit or replace with their own numbers.
+const STANDALONE_VESSEL = {
+  name: '示例潜水艇',
+  slot: 0,
+  owner: '',
+  world: '海猫茶屋',
+  level: 140,
+  exp: 0,
+  expToNext: 0,
+  parts: [24362, 24355, 24364, 24361],
+  currentPoints: [],
+  route: [],
+  demo: true,
+};
+
 async function loadVessels() {
   const badge = $('#source-badge');
+  if (state.standalone) {
+    // Keep any manual rows the user added locally; only the demo row is synthetic.
+    state.slots = [STANDALONE_VESSEL, ...state.slots.filter((s) => s.manual)];
+    if (!state.world) state.world = STANDALONE_VESSEL.world;
+    state.source = '静态托管 · 未连接本地服务';
+    badge.className = 'badge';
+    badge.textContent = '静态模式 · 示例潜艇，可手动改配置';
+    badge.title = 'GitHub Pages 等静态托管读不到本机的 AutoRetainer 配置；价格直接向 Universalis 查询。';
+    if (state.activeSlot >= state.slots.length) state.activeSlot = 0;
+    return;
+  }
   try {
     const res = await fetch('/api/autoretainer', { cache: 'no-store' });
     const body = await res.json();
@@ -1534,8 +1635,25 @@ function exportJson() {
 
 /* ---------- boot ---------- */
 
+// A GitHub Pages (or any static) deployment answers /api/autoretainer with the SPA's own HTML,
+// not JSON, so a redirect or HTML body means "no backend here".
+async function detectStandalone() {
+  try {
+    const res = await fetch('/api/autoretainer', { cache: 'no-store' });
+    const type = res.headers.get('content-type') || '';
+    if (type.includes('application/json')) return false;
+    // Some hosts omit the content-type on their 404 page; the body settles it.
+    const text = await res.text();
+    JSON.parse(text);
+    return false;
+  } catch (_) {
+    return true;
+  }
+}
+
 async function boot() {
   loadStored();
+  state.standalone = await detectStandalone();
   await loadData();
   await loadVessels();
 
