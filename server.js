@@ -235,11 +235,15 @@ async function fetchPrices(dc, ids, force = false) {
 
   const absorb = (body) => {
     for (const [id, v] of Object.entries(body.items || {})) {
+      // Universalis' averagePrice is a plain mean over the window, so one troll sale owns it: a
+      // Ruby sold for 210,526,315 gil on Mana dragged the figure to 1.3M while the other nineteen
+      // sales sat at 1-4 gil. The median of the same sales ignores that, so prefer it and fall back
+      // to the listing median when the item has not sold.
+      const saleMedian = median((v.recentHistory || []).map((s) => Number(s.pricePerUnit) || 0).filter(Boolean));
       const listingMedian = median((v.listings || []).map((l) => Number(l.pricePerUnit) || 0).filter(Boolean));
-      const sold = Number(v.averagePrice) || 0;
       entry.prices[id] = {
-        avg: sold > 0 ? sold : listingMedian,
-        sold: sold > 0,
+        avg: saleMedian > 0 ? saleMedian : listingMedian,
+        sold: saleMedian > 0,
         listing: listingMedian,
         min: Number(v.minPrice) || 0,
         units: Number(v.regularSaleVelocity) || 0,
@@ -247,13 +251,16 @@ async function fetchPrices(dc, ids, force = false) {
     }
   };
 
+  let reached = false;
   const request = async (chunk) => {
     const url = `https://universalis.app/api/v2/${encodeURIComponent(dc)}/${chunk.join(',')}?listings=20&entries=20`;
     absorb(await fetchJson(url, 20000));
+    reached = true;
   };
 
   // One id Universalis does not know fails the whole batch, so a failed batch is split in half
-  // instead of retried one id at a time.
+  // instead of retried one id at a time. A batch that 404s all the way down means those items
+  // simply have no listings on this DC, which is a normal answer rather than an outage.
   const fetchRange = async (chunk) => {
     if (!chunk.length) return;
     try {
@@ -269,9 +276,10 @@ async function fetchPrices(dc, ids, force = false) {
   const chunks = [];
   for (let i = 0; i < want.length; i += 50) chunks.push(want.slice(i, i + 50));
   await Promise.all(chunks.map(fetchRange));
-  // Only bump the timestamp when something was actually pulled, so a cache hit keeps reporting
-  // when the figures were really retrieved.
-  if (want.length) entry.at = Date.now();
+  // Only bump the timestamp when Universalis actually answered, so an outage does not get reported
+  // to the UI as fresh prices. This is per-DC rather than per-id: an item with no listings can never
+  // answer, and one reachable batch is enough to prove the API is up.
+  if (reached) entry.at = Date.now();
   marketCache.set(dc, entry);
   return entry;
 }

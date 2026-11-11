@@ -197,13 +197,12 @@ const I18N = {
   counted: { zh: '计入 {a}/{b} 件', ja: '{a}/{b} 件を計上', en: '{a} of {b} items counted' },
   bandText: { zh: '探索档位 {band}', ja: '探索段階 {band}', en: 'Surveillance band {band}' },
   poolLanding: { zh: '落池 {odds}', ja: '抽選先 {odds}', en: 'lands in {odds}' },
-  poolLandingParen: { zh: '（落池 {odds}）', ja: '（抽選先 {odds}）', en: ' (lands in {odds})' },
   poolN: { zh: '{n}池 {pct}%', ja: 'プール{n} {pct}%', en: 'pool {n} {pct}%' },
   poolSource: { zh: '{code} {name} {n}池', ja: '{code} {name} プール{n}', en: '{code} {name} pool {n}' },
   lootMeta: {
-    zh: '{lead}（沉船首饰按商店回收价，不受单价门槛限制） · {tier}，按收集档折算{favors} · 单价低于 {v} gil 的物品不计入{repair}',
-    ja: '{lead}（沈没船の装飾品は店売り価格で計算し、単価の下限は適用しません） · {tier}、収集段階で換算{favors} · 単価 {v} gil 未満のアイテムは除外{repair}',
-    en: '{lead} (wrecked jewellery uses vendor prices and is exempt from the cutoff) · {tier}, scaled by retrieval band{favors} · items under {v} gil are excluded{repair}',
+    zh: '{lead}（沉船首饰按商店回收价，不受单价门槛限制） · 单价低于 {v} gil 的物品不计入{repair}',
+    ja: '{lead}（沈没船の装飾品は店売り価格で計算し、単価の下限は適用しません） · 単価 {v} gil 未満のアイテムは除外{repair}',
+    en: '{lead} (wrecked jewellery uses vendor prices and is exempt from the cutoff) · items under {v} gil are excluded{repair}',
   },
   repairDeduct: {
     zh: ' · 已扣耐久修理 {per} 个材料 ≈ {gil} gil',
@@ -214,11 +213,6 @@ const I18N = {
     zh: '恩惠达标，第二件按实测 {pct}% 折算',
     ja: '恩恵達成、2件目は実測 {pct}% で計上',
     en: 'favour met — second item counted at the measured {pct}%',
-  },
-  favoredSuffix: {
-    zh: '，恩惠达标，第二件按实测 {pct}% 折算',
-    ja: '、恩恵達成、2件目は実測 {pct}% で計上',
-    en: ', favour met — second item counted at the measured {pct}%',
   },
   notFavoredText: { zh: '恩惠未达标', ja: '恩恵未達成', en: 'favour not met' },
 
@@ -436,13 +430,50 @@ const state = {
   standalone: false,
 };
 
-// Universalis 的国服大区 → 世界表。只在取价时用来把世界映射到大区，界面直接列这张表。
-const DC_WORLDS = {
+// Universalis 的大区 → 世界表，同时用于界面下拉和取价时的世界→大区映射。
+// 国服与国际服分成两张表：界面按当前语言列其中一张，取价时两张都要能查（AutoRetainer
+// 读到的往往是国服世界，而界面可能已经切到英文）。数据取自 Universalis 的 /data-centers。
+const CN_WORLDS = {
   陆行鸟: ['红玉海', '神意之地', '拉诺西亚', '幻影群岛', '萌芽池', '宇宙和音', '沃仙曦染', '晨曦王座'],
   莫古力: ['白银乡', '白金幻象', '神拳痕', '潮风亭', '旅人栈桥', '拂晓之间', '龙巢神殿', '梦羽宝境'],
   猫小胖: ['紫水栈桥', '延夏', '静语庄园', '摩杜纳', '海猫茶屋', '柔风海湾', '琥珀原'],
   豆豆柴: ['水晶塔', '银泪湖', '太阳海岸', '伊修加德', '红茶川'],
+  // 繁中服和国际服走同一个 Universalis 实例，但界面上归到中文区一起列，中文玩家不必切语言。
+  陸行鳥: ['伊弗利特', '迦樓羅', '利維坦', '鳳凰', '奧汀', '巴哈姆特', '拉姆', '泰坦'],
 };
+
+const INTL_WORLDS = {
+  Elemental: ['Aegis', 'Atomos', 'Carbuncle', 'Garuda', 'Gungnir', 'Kujata', 'Tonberry', 'Typhon'],
+  Gaia: ['Alexander', 'Bahamut', 'Durandal', 'Fenrir', 'Ifrit', 'Ridill', 'Tiamat', 'Ultima'],
+  Mana: ['Anima', 'Asura', 'Chocobo', 'Hades', 'Ixion', 'Masamune', 'Pandaemonium', 'Titan'],
+  Meteor: ['Belias', 'Mandragora', 'Ramuh', 'Shinryu', 'Unicorn', 'Valefor', 'Yojimbo', 'Zeromus'],
+  Aether: ['Adamantoise', 'Cactuar', 'Faerie', 'Gilgamesh', 'Jenova', 'Midgardsormr', 'Sargatanas', 'Siren'],
+  Primal: ['Behemoth', 'Excalibur', 'Exodus', 'Famfrit', 'Hyperion', 'Lamia', 'Leviathan', 'Ultros'],
+  Crystal: ['Balmung', 'Brynhildr', 'Coeurl', 'Diabolos', 'Goblin', 'Malboro', 'Mateus', 'Zalera'],
+  Dynamis: ['Cuchulainn', 'Golem', 'Halicarnassus', 'Kraken', 'Maduin', 'Marilith', 'Rafflesia', 'Seraph'],
+  Chaos: ['Cerberus', 'Louisoix', 'Moogle', 'Omega', 'Phantom', 'Ragnarok', 'Sagittarius', 'Spriggan'],
+  Light: ['Alpha', 'Lich', 'Odin', 'Phoenix', 'Raiden', 'Shiva', 'Twintania', 'Zodiark'],
+  Materia: ['Bismarck', 'Ravana', 'Sephirot', 'Sophia', 'Zurvan'],
+  한국: ['카벙클', '초코보', '모그리', '톤베리', '펜리르'],
+};
+
+// 界面语言 → 该语言玩家所在的服务区。切语言时服务器会跟着换，默认值也在这里。
+const REGIONS = {
+  zh: { key: 'cn', table: CN_WORLDS, default: '海猫茶屋' },
+  ja: { key: 'intl', table: INTL_WORLDS, default: 'Asura' },
+  en: { key: 'intl', table: INTL_WORLDS, default: 'Asura' },
+};
+
+function regionOf(lang) {
+  return REGIONS[lang] || REGIONS.zh;
+}
+
+function regionKeyOfWorld(world) {
+  for (const region of Object.values(REGIONS)) {
+    if (Object.values(region.table).flat().includes(world)) return region.key;
+  }
+  return '';
+}
 
 const MAX_ROUTE_POINTS = 5;
 
@@ -469,13 +500,21 @@ function loadStored() {
     if (saved.mode === 'target' || saved.mode === 'value') state.mode = saved.mode;
     state.targets = new Set(saved.targets || []);
     state.cycleHours = Number(saved.cycleHours) || 24;
+    // 语言要先读：服务器的合法性是相对语言判断的。
+    if (LANGS.includes(saved.lang)) state.lang = saved.lang;
+    // 服务器跟着语言走：如果上次选的服务器和现在的语言不在一个区（例如上次是中文+海猫茶屋，
+    // 这次是英文界面），就按当前语言的默认值来，省得界面列着国际服却查国服的价格。
     state.world = saved.world || '';
+    if (state.world && regionKeyOfWorld(state.world) !== regionOf(state.lang).key) state.world = '';
     state.slots = Array.isArray(saved.slots) ? saved.slots : [];
     state.hidden = new Set(saved.hidden || []);
-    state.prices = saved.prices || {};
-    state.pricesAt = saved.pricesAt || {};
-    state.pricesFetchedAt = Number(saved.pricesFetchedAt) || 0;
-    if (LANGS.includes(saved.lang)) state.lang = saved.lang;
+    // 缓存的价格属于上一个大区，换了区就不能再用：否则界面上会挂着国服的价，标着国际服的服务器。
+    // 旧版本按 averagePrice 存的价会被单笔离谱成交带偏（见 PRICE_SCHEMA），一并作废。
+    const regionChanged = !state.world && !!saved.world;
+    const staleShape = Number(saved.priceSchema) !== PRICE_SCHEMA;
+    state.prices = regionChanged || staleShape ? {} : saved.prices || {};
+    state.pricesAt = regionChanged || staleShape ? {} : saved.pricesAt || {};
+    state.pricesFetchedAt = regionChanged || staleShape ? 0 : Number(saved.pricesFetchedAt) || 0;
   } catch (_) {
     /* ignore corrupt storage */
   }
@@ -498,6 +537,7 @@ function persist() {
     prices: state.prices,
     pricesAt: state.pricesAt,
     pricesFetchedAt: state.pricesFetchedAt,
+    priceSchema: PRICE_SCHEMA,
   };
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
@@ -632,10 +672,35 @@ function worldOf(v) {
   return state.world || (v && v.world) || '';
 }
 
-// 世界 → 大区。静态模式下没有服务端帮忙映射，这张表就是唯一依据；表外的世界按原名直接查。
+// 语言决定服务区：中文查国服，日文/英文查国际服。已经在目标区里的世界保持不动，只有跨区
+// （或还没选过）时才落到该区的默认世界，免得 ja↔en 之间切换把用户选好的服务器冲掉。
+function worldForLang(lang) {
+  const region = regionOf(lang);
+  const worlds = Object.values(region.table).flat();
+  if (worlds.includes(state.world)) return state.world;
+  return region.default;
+}
+
+// 换服务器就换了大区，所有价格都失效；集中在这里，语言切换和下拉选择走同一条路。
+function setWorld(world) {
+  const changed = world !== state.world;
+  state.world = world;
+  if (changed) {
+    state.prices = {};
+    state.pricesAt = {};
+    state.pricesFetchedAt = 0;
+    state.priceError = '';
+  }
+  persist();
+  return changed;
+}
+
+// 世界 → 大区。静态模式下没有服务端帮忙映射，这两张表就是唯一依据；表外的世界按原名直接查。
 function dcOf(world) {
-  for (const [dc, worlds] of Object.entries(DC_WORLDS)) {
-    if (worlds.includes(world)) return dc;
+  for (const table of [CN_WORLDS, INTL_WORLDS]) {
+    for (const [dc, worlds] of Object.entries(table)) {
+      if (worlds.includes(world)) return dc;
+    }
   }
   return world;
 }
@@ -759,7 +824,8 @@ function renderWorld() {
   host.innerHTML = '';
   const select = document.createElement('select');
   select.id = 'world-select';
-  for (const [dc, worlds] of Object.entries(DC_WORLDS)) {
+  // 只列当前语言对应的服务区：中文玩家查国服价格，日/英文玩家查国际服。
+  for (const [dc, worlds] of Object.entries(regionOf(state.lang).table)) {
     const group = document.createElement('optgroup');
     group.label = dc;
     for (const w of worlds) {
@@ -780,14 +846,11 @@ function renderWorld() {
   }
   select.addEventListener('change', () => {
     // The city a character is standing in is not where they buy; the chosen world is.
-    state.world = select.value;
-    // Prices belong to one data center, so a world change invalidates all of them.
-    state.prices = {};
-    state.pricesAt = {};
-    state.pricesFetchedAt = 0;
-    state.priceError = '';
-    persist();
+    if (!setWorld(select.value)) return;
+    // Prices were just dropped, so the table's gil column and the sidebar are stale until both are
+    // rebuilt. queuePriceFetch repaints them again once the new data center answers.
     renderWorld();
+    renderSectors();
     renderSummary();
     queuePriceFetch();
   });
@@ -966,6 +1029,10 @@ function fmtDuration(seconds) {
 }
 
 /* ---------- loot value (Universalis CN, per surveillance/retrieval tier) ---------- */
+
+// 价格口径版本。改一次 `avg` 的取法就 +1，让存档里按旧口径缓存的价格失效——否则老用户会一直
+// 挂着被单笔离谱成交拉偏的价，直到手动点「重新获取价格」。
+const PRICE_SCHEMA = 2;
 
 // 沉船首饰没有市场成交记录，只能按商店回收价计价。数值取 Item.csv 的 Price{Low}。
 const VENDOR_PRICES = {
@@ -1332,11 +1399,13 @@ async function fetchPricesDirect(world, ids) {
 
   const absorb = (body) => {
     for (const [id, v] of Object.entries(body.items || {})) {
+      // Same reasoning as the server: averagePrice is a plain mean, so a single absurd sale (a Ruby
+      // at 210,526,315 gil on Mana) owns the figure. The median of the sales themselves does not.
+      const saleMedian = median((v.recentHistory || []).map((s) => Number(s.pricePerUnit) || 0).filter(Boolean));
       const listingMedian = median((v.listings || []).map((l) => Number(l.pricePerUnit) || 0).filter(Boolean));
-      const sold = Number(v.averagePrice) || 0;
       prices[id] = {
-        avg: sold > 0 ? sold : listingMedian,
-        sold: sold > 0,
+        avg: saleMedian > 0 ? saleMedian : listingMedian,
+        sold: saleMedian > 0,
         listing: listingMedian,
         min: Number(v.minPrice) || 0,
         units: Number(v.regularSaleVelocity) || 0,
@@ -1695,9 +1764,7 @@ function renderLoot(ordered, stats, costs) {
   if (!ordered.length) return;
 
   const rows = [];
-  const drawing = [];
   for (const s of ordered) {
-    drawing.push({ ...drawCounts(s.id, stats), sector: s });
     for (const item of itemValues(s.id, stats)) {
       rows.push({ ...item, sector: s });
     }
@@ -1730,12 +1797,6 @@ function renderLoot(ordered, stats, costs) {
   }
   head.append(totalLine);
   const dcText = (state.marketDcs || []).join(', ') || t('localDc');
-  // A stop lands in a pool by chance, so show the band the vessel rolls into and where that lands.
-  const bands = [...new Set(drawing.map((d) => bandLabel(d.tier)))].sort();
-  const odds = poolOddsText(drawing);
-  const favors = drawing.every((d) => d.favorMet);
-  const tierText =
-    t('bandText', { band: bands.join('/') }) + t('poolLandingParen', { odds: odds.join(' · ') });
   const repairText =
     costs && costs.repair && costs.repair.gil > 0
       ? t('repairDeduct', {
@@ -1743,15 +1804,12 @@ function renderLoot(ordered, stats, costs) {
           gil: fmt(Math.round(costs.repair.gil)),
         })
       : '';
-  const favorsText = favors ? t('favoredSuffix', { pct: Math.round((drawing[0].second || 0) * 100) }) : '';
   head.append(
     el(
       'div',
       'vessel-meta',
       t('lootMeta', {
         lead: t('lootMetaLead', { dc: dcText }),
-        tier: tierText,
-        favors: favorsText,
         v: fmt(MIN_UNIT_VALUE),
         repair: repairText,
       })
@@ -2468,7 +2526,7 @@ async function loadVessels() {
   if (state.standalone) {
     // Keep any manual rows the user added locally; only the demo row is synthetic.
     state.slots = [STANDALONE_VESSEL, ...state.slots.filter((s) => s.manual)];
-    if (!state.world) state.world = STANDALONE_VESSEL.world;
+    state.world = worldForLang(state.lang);
     state.source = t('staticSource');
     state.sourceInfo = { static: true };
     badge.className = 'badge';
@@ -2491,11 +2549,8 @@ async function loadVessels() {
     const kept = state.slots.filter((s) => s.manual);
     // `slot` stays the AutoRetainer slot number so overrides keep pointing at the same submarine.
     const fetched = vessels.map((v) => ({ ...v, slot: Number(v.slot) || 0 }));
-    // Auto-filled worlds are only a default; the world select is the source of truth once set.
-    if (!state.world) {
-      const w = vessels.map((v) => v.world).find(Boolean);
-      if (w) state.world = w;
-    }
+    // 世界不再从配置里抄：它由语言决定（中文查国服、日/英文查国际服），用户也可以自己改。
+    if (!state.world) state.world = worldForLang(state.lang);
     state.slots = [...fetched, ...kept];
     state.source = body.source || '';
     const groups = mergeSlots(visibleSlots()).length;
@@ -2617,7 +2672,9 @@ function renderLangSelect() {
     state.lang = select.value;
     // Part and item names are cached in the index at load time, so rebuild before repainting.
     buildPartsIndex();
-    persist();
+    // 语言即服务区：切到日/英文查国际服，切回中文查国服。跨区时 setWorld 会清空价格缓存，
+    // 随后的 renderAll() 里 queuePriceFetch 再按新大区重查。
+    setWorld(worldForLang(state.lang));
     applyStaticText();
     // The sea list and the per-row sea cells carry localised names; the selection itself does not
     // change, so remember it across the rebuild.
