@@ -600,19 +600,16 @@ function thresholdsFor(sectorId) {
   return (entry && entry.breakpoints) || null;
 }
 
-// Surveillance does not swap one pool for a richer one: each reached threshold unlocks its pool and
-// every unlocked pool is drawn. Same structure as SubmarineTracker's PredictBonusExp.
-function unlockedTiers(sectorId, surveillance) {
-  const t = thresholdsFor(sectorId);
-  if (!t) return [0];
-  const tiers = [0];
-  if (t.t2 > 0 && surveillance >= t.t2) tiers.push(1);
-  if (t.t3 > 0 && surveillance >= t.t3) tiers.push(2);
-  return tiers;
-}
-
+// Surveillance moves a sector to a richer pool instead of adding one: the three pools are mutually
+// exclusive tiers of the same draw, not stacked chances. FFXIVGachaSpreadsheet files every voyage
+// record under the single pool its primary drop rolled from (GetSurvTier), and each pool's chances
+// sum to 1 — so exactly one pool produces per visit. Argus reads it the same way in ItemYield.
 function surveillanceTier(sectorId, surveillance) {
-  return Math.max(...unlockedTiers(sectorId, surveillance));
+  const t = thresholdsFor(sectorId);
+  if (!t) return 0;
+  if (t.t3 > 0 && surveillance >= t.t3) return 2;
+  if (t.t2 > 0 && surveillance >= t.t2) return 1;
+  return 0;
 }
 
 function retrievalTier(sectorId, retrieval) {
@@ -627,16 +624,13 @@ function favorMet(sectorId, favor) {
   return Boolean(t && favor >= t.favor);
 }
 
-// Draws per visit: one per unlocked pool, doubled when the favour line is met (SubmarineTracker
-// caps the whole thing at 4).
+// One pool drops per visit. Meeting the favour line lets a second item come back; the crowd data has
+// no per-item probability for it, so the pool's value is scaled by 2 as an approximation.
 function drawCounts(sectorId, stats) {
-  const unlocked = unlockedTiers(sectorId, stats.surveillance);
-  const doubled = favorMet(sectorId, stats.favor) ? 2 : 1;
-  // The cap applies to the whole voyage, not to each pool, so divide the capped total back out.
-  const total = Math.min(unlocked.length * doubled, 4);
-  const weight = total / unlocked.length;
-  const counts = unlocked.map((tier) => ({ tier, draws: weight, weight }));
-  return { counts, total, favorMet: doubled === 2 };
+  const tier = surveillanceTier(sectorId, stats.surveillance);
+  const favored = favorMet(sectorId, stats.favor);
+  const weight = favored ? 2 : 1;
+  return { counts: [{ tier, weight }], total: weight, favorMet: favored };
 }
 
 function poolFor(sectorId, tier) {
@@ -646,11 +640,45 @@ function poolFor(sectorId, tier) {
 }
 
 // Expected units per visit: chance * midpoint of the [min,max] range for this retrieval tier.
+// The retrieval band an item's quantity was taken from, for display: 收集差/普通/最优 plus the range.
+const RET_LABELS = ['收集差', '收集普通', '收集最优'];
+
+function qtyBand(itemId, sectorId, stats) {
+  const tier = retrievalTier(sectorId, stats.retrieval);
+  let drop = null;
+  for (const t of [0, 1, 2]) {
+    const hit = poolFor(sectorId, t).find((d) => d.id === itemId);
+    if (hit) { drop = hit; break; }
+  }
+  const q = (drop && drop.qty) || [];
+  if (q.length < 6) return null;
+  // Mirror expectedUnits' fallback so the label matches the number actually used.
+  let used = tier;
+  if ((q[used * 2 + 1] || 0) <= 0) {
+    used = -1;
+    for (let t = tier - 1; t >= 0; t -= 1) {
+      if ((q[t * 2 + 1] || 0) > 0) { used = t; break; }
+    }
+  }
+  if (used < 0) return null;
+  return { label: RET_LABELS[used], range: `${q[used * 2]}–${q[used * 2 + 1]} 个` };
+}
+
 function expectedUnits(drop, retTier) {
   const q = drop.qty || [];
   if (q.length < 6) return drop.chance || 0;
   const min = q[retTier * 2] || 0;
   const max = q[retTier * 2 + 1] || 0;
+  // Some items have no recorded quantity at the optimal tier ([0,0], 252 entries). That is missing
+  // data, not "you get nothing for collecting better", so fall back to the highest tier that has one.
+  if (max <= 0) {
+    for (let tier = retTier - 1; tier >= 0; tier -= 1) {
+      const lo = q[tier * 2] || 0;
+      const hi = q[tier * 2 + 1] || 0;
+      if (hi > 0) return (drop.chance || 0) * ((lo + hi) / 2);
+    }
+    return drop.chance || 0;
+  }
   return (drop.chance || 0) * ((min + max) / 2);
 }
 
@@ -716,8 +744,8 @@ function isSlowMoving(itemId) {
   return velocity !== null && velocity < LOW_VOLUME_PER_DAY;
 }
 
-// Gil from one visit to a sector: every unlocked pool contributes its own draw, and meeting the
-// favour line doubles it. Items worth less than MIN_UNIT_VALUE are dropped from the sum so bulk
+// Gil from one visit to a sector: the single pool its surveillance reaches drops, and meeting the
+// favour line doubles that. Items worth less than MIN_UNIT_VALUE are dropped from the sum so bulk
 // raw materials do not crowd out the gear that actually pays.
 function sectorValue(sectorId, stats) {
   const ret = retrievalTier(sectorId, stats.retrieval);
@@ -745,7 +773,7 @@ function sectorValue(sectorId, stats) {
   }
   return {
     gil,
-    tier: Math.max(...counts.map((c) => c.tier)),
+    tier: counts[0].tier,
     ret,
     priced,
     cheap,
@@ -1018,16 +1046,14 @@ function candidateMaps(v) {
   return [...byMap.values()];
 }
 
-// Only the pools this vessel's surveillance unlocks contribute value, so don't price the rest.
+// Only the pool this vessel's surveillance reaches can drop, so don't price the other two.
 function candidateIds(maps) {
   const v = activeVessel();
   const surveillance = v ? vesselStats(v).surveillance : 0;
   const ids = new Set();
   for (const sectors of maps) {
     for (const s of sectors) {
-      for (const tier of unlockedTiers(s.id, surveillance)) {
-        for (const drop of poolFor(s.id, tier)) ids.add(drop.id);
-      }
+      for (const drop of poolFor(s.id, surveillanceTier(s.id, surveillance))) ids.add(drop.id);
     }
   }
   return [...ids];
@@ -1130,8 +1156,10 @@ function renderLoot(ordered, stats, costs) {
   }
   head.append(totalLine);
   const dcText = (state.marketDcs || []).join('、') || '本地大区';
-  const draws = drawing.reduce((a, d) => a + d.total, 0);
-  const favors = drawing.some((d) => d.favored);
+  // Each sector drops from exactly one pool, so the voyage totals one draw per stop.
+  const tiers = [...new Set(drawing.map((d) => d.counts[0].tier + 1))].sort();
+  const favors = drawing.every((d) => d.favored);
+  const tierText = `探索档位 ${tiers.join('/')}`;
   const repairText =
     costs && costs.repair && costs.repair.gil > 0
       ? ` · 已扣耐久修理 ${costs.repair.perRepair.toFixed(1)} 个材料 ≈ ${fmt(Math.round(costs.repair.gil))} gil`
@@ -1140,7 +1168,7 @@ function renderLoot(ordered, stats, costs) {
     el(
       'div',
       'vessel-meta',
-      `价格：Universalis · ${dcText}（沉船首饰按商店回收价，不受单价门槛限制） · 每趟 ${draws} 次抽取，按解锁池与收集档折算${favors ? '（含恩惠加成）' : ''} · 单价低于 ${fmt(MIN_UNIT_VALUE)} gil 的物品不计入${repairText}`
+      `价格：Universalis · ${dcText}（沉船首饰按商店回收价，不受单价门槛限制） · ${tierText}，按收集档折算${favors ? '，恩惠达标按两件估算' : ''} · 单价低于 ${fmt(MIN_UNIT_VALUE)} gil 的物品不计入${repairText}`
     )
   );
   host.append(head);
@@ -1159,6 +1187,9 @@ function renderLoot(ordered, stats, costs) {
     let note = `来自 ${r.sector.code} ${r.sector.name}${r.vendor ? ' · 商店回收价' : ''}`;
     if (slow) note += ` · 大区日成交 ${velocity.toFixed(1)} 件，较难出手`;
     box.append(el('div', 'vessel-meta', note));
+    // Quantity depends on the retrieval tier, so show which band was used and what it yields.
+    const band = qtyBand(r.id, r.sector.id, stats);
+    if (band) box.append(el('div', 'loot-tag', `数量 ${band.label} ${band.range}`));
     if (slow) box.title = `该物品整个大区日均成交 ${velocity.toFixed(1)} 件，低于 ${LOW_VOLUME_PER_DAY} 件。估值仍按市场价计算，但实际卖出可能很慢。`;
     grid.append(box);
   }
@@ -1236,9 +1267,7 @@ function refreshableIds() {
     const stats = vesselStats(v);
     for (const id of candidateIds([sectors])) ids.add(id);
     for (const id of state.selected) {
-      for (const tier of unlockedTiers(id, stats.surveillance)) {
-        for (const drop of poolFor(id, tier)) ids.add(drop.id);
-      }
+      for (const drop of poolFor(id, surveillanceTier(id, stats.surveillance))) ids.add(drop.id);
     }
   }
   // Repair materials are a cost, not a drop, but they need a price too.
@@ -1342,7 +1371,7 @@ function renderSectors() {
     if (val.cheap) skipped.push(`${val.cheap} 件低于 ${fmt(MIN_UNIT_VALUE)} gil`);
     if (val.unpriced) skipped.push(`${val.unpriced} 件无报价`);
     gilCell.title =
-      `解锁池 ${val.tier + 1} 档 · 抽取 ${val.draws} 次${val.favored ? '（恩惠达标）' : ''} · ` +
+      `探索档位 ${val.tier + 1}/3 · ${val.favored ? '恩惠达标，按两件估算' : '恩惠未达标'} · ` +
       `计入 ${val.priced}/${val.counted} 件${skipped.length ? `（${skipped.join('、')}）` : ''}`;
     tr.append(gilCell);
 

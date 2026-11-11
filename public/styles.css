@@ -512,6 +512,11 @@ input[type="checkbox"] {
   color: rgba(255, 107, 122, 0.85);
 }
 
+/* 收集档决定数量区间，标出来才能看出阈值对单件收益的影响。 */
+.loot-item .loot-tag {
+  margin-top: 4px;
+}
+
 .loot-name {
   font-size: 13px;
   overflow: hidden;
