@@ -11,16 +11,17 @@
     <div class="brand">
       <span class="brand-mark">⚓</span>
       <div>
-        <h1>潜水艇规划器</h1>
-        <p>部队潜水艇 · 配置 / 航点 / 升级规划</p>
+        <h1 data-i18n="appTitle">潜水艇规划器</h1>
+        <p data-i18n="appSubtitle">部队潜水艇 · 配置 / 航点 / 升级规划</p>
       </div>
     </div>
     <div class="topbar-actions">
-      <span id="source-badge" class="badge">正在读取 AutoRetainer…</span>
-      <button id="refresh-btn" class="btn">重新读取</button>
-      <button id="export-btn" class="btn">导出配置</button>
+      <span id="source-badge" class="badge" data-i18n="badgeReading">正在读取 AutoRetainer…</span>
+      <select id="lang-select" class="lang-select" aria-label="Language"></select>
+      <button id="refresh-btn" class="btn" data-i18n="btnReload">重新读取</button>
+      <button id="export-btn" class="btn" data-i18n="btnExport">导出配置</button>
       <label class="btn btn-file">
-        导入数据
+        <span data-i18n="btnImport">导入数据</span>
         <input id="import-input" type="file" accept="application/json" hidden />
       </label>
     </div>
@@ -29,50 +30,71 @@
   <div class="layout">
     <aside class="panel">
       <section class="section">
-        <h2>潜水艇</h2>
+        <h2 data-i18n="secVessels">潜水艇</h2>
         <div id="vessel-list" class="vessel-list"></div>
       </section>
 
       <section class="section">
-        <h2>服务器</h2>
+        <h2 data-i18n="secWorld">服务器</h2>
         <div id="world-view" class="world-view"></div>
       </section>
 
       <section class="section">
-        <h2>配件</h2>
+        <h2 data-i18n="secParts">配件</h2>
         <div id="parts-editor" class="parts-editor"></div>
       </section>
 
       <section class="section">
-        <h2>属性</h2>
+        <h2 data-i18n="secStats">属性</h2>
         <div id="stats-view" class="stats-view"></div>
       </section>
 
       <section class="section">
-        <h2>等级</h2>
+        <h2 data-i18n="secLevel">等级</h2>
         <div id="level-view" class="level-view"></div>
       </section>
     </aside>
 
     <main class="panel panel-main">
       <div class="plan-header">
-        <h2>航点规划</h2>
+        <h2 data-i18n="secPlan">航点规划</h2>
         <div class="plan-controls">
           <label class="field">
-            海域
+            <span data-i18n="fieldMap">海域</span>
             <select id="map-filter"></select>
           </label>
           <label class="field">
-            目标时长
-            <select id="duration-target">
-              <option value="24">24 小时</option>
-              <option value="48">48 小时</option>
-              <option value="72">72 小时</option>
+            <span data-i18n="fieldMode">规划模式</span>
+            <select id="mode-select">
+              <option value="value" data-i18n="mode_value">价值优先</option>
+              <option value="target" data-i18n="mode_target">目标掉落优先</option>
             </select>
           </label>
-          <button id="add-route-btn" class="btn btn-primary">生成路线</button>
-          <button id="clear-btn" class="btn">清除</button>
+          <label class="field">
+            <span data-i18n="fieldDuration">目标时长</span>
+            <select id="duration-target">
+              <option value="24">24 h</option>
+              <option value="48">48 h</option>
+              <option value="72">72 h</option>
+            </select>
+          </label>
+          <button id="add-route-btn" class="btn btn-primary" data-i18n="btnGenerate">生成路线</button>
+          <button id="clear-btn" class="btn" data-i18n="btnClear">清除</button>
         </div>
+      </div>
+
+      <div id="target-bar" class="target-bar" hidden>
+        <div class="target-search">
+          <input
+            id="target-search"
+            type="search"
+            autocomplete="off"
+            placeholder="搜索全部掉落物，点选加入目标…"
+            data-i18n-placeholder="targetSearchPlaceholder"
+          />
+          <div id="target-suggest" class="target-suggest" hidden></div>
+        </div>
+        <div id="target-tags" class="target-tags"></div>
       </div>
 
       <div class="summary">
@@ -87,15 +109,15 @@
           <thead>
             <tr>
               <th class="col-check"><input id="select-all" type="checkbox" /></th>
-              <th>航点</th>
-              <th>海域</th>
-              <th>需求等级</th>
-              <th>解锁自</th>
-              <th>调查耗时</th>
-              <th>经验</th>
-              <th>青磷水</th>
-              <th>掉落估值</th>
-              <th>状态</th>
+              <th data-i18n="thSector">航点</th>
+              <th data-i18n="thMap">海域</th>
+              <th data-i18n="thRank">需求等级</th>
+              <th data-i18n="thUnlock">解锁自</th>
+              <th data-i18n="thSurvey">调查耗时</th>
+              <th data-i18n="thExp">经验</th>
+              <th data-i18n="thCeruleum">青磷水</th>
+              <th id="th-value" data-i18n="thValue">掉落估值</th>
+              <th data-i18n="thStatus">状态</th>
             </tr>
           </thead>
           <tbody></tbody>

@@ -2,24 +2,408 @@
 
 const STORAGE_KEY = 'submarine-planner-v2';
 const SLOT_KEYS = ['hull', 'stern', 'bow', 'bridge'];
-const SLOT_LABELS = { hull: '船体', stern: '船尾', bow: '舰首', bridge: '舰桥' };
-const STAT_KEYS = [
-  ['surveillance', '探索'],
-  ['retrieval', '收集'],
-  ['speed', '速度'],
-  ['range', '航程'],
-  ['durability', '耐久'],
-  ['favor', '恩惠'],
-];
+const STAT_KEYS = ['surveillance', 'retrieval', 'speed', 'range', 'durability', 'favor'];
 
-// In-game descriptions of each stat, shown on hover.
-const STAT_DESCRIPTIONS = {
-  surveillance: '探索性能：达到一定值后有概率获得更高级的物品。',
-  retrieval: '收集性能：达到一定值后有概率提高获得物品的数量（部分物品无效）。',
-  speed: '巡航速度：减少探索时间。',
-  range: '航行距离：可以到达更远的地点或更多的地点。',
-  favor: '恩惠：达到一定值后有概率获取第二件物品；到达某个阈值必定获得第二件物品。',
+const LANGS = ['zh', 'ja', 'en'];
+const LANG_NAMES = { zh: '中文', ja: '日本語', en: 'English' };
+const LANG_TAGS = { zh: 'zh-CN', ja: 'ja', en: 'en' };
+const LOCALES = { zh: 'zh-CN', ja: 'ja-JP', en: 'en-US' };
+
+// UI text in the three client languages. Placeholders are `{name}` and are filled by t(); a few
+// strings carry <b> because they are assigned through innerHTML.
+const I18N = {
+  appTitle: { zh: '潜水艇规划器', ja: 'サブマリン・プランナー', en: 'Submarine Planner' },
+  appSubtitle: {
+    zh: '部队潜水艇 · 配置 / 航点 / 升级规划',
+    ja: 'フリーカンパニーのサブマリン · 装備 / 航路 / 育成計画',
+    en: 'Free company submersibles · parts, destinations, levelling',
+  },
+  badgeReading: { zh: '正在读取 AutoRetainer…', ja: 'AutoRetainer を読み込み中…', en: 'Reading AutoRetainer…' },
+  btnReload: { zh: '重新读取', ja: '再読み込み', en: 'Reload' },
+  btnExport: { zh: '导出配置', ja: '設定を書き出す', en: 'Export' },
+  btnImport: { zh: '导入数据', ja: 'データを読み込む', en: 'Import' },
+
+  secVessels: { zh: '潜水艇', ja: 'サブマリン', en: 'Submersibles' },
+  secWorld: { zh: '服务器', ja: 'サーバー', en: 'Server' },
+  secParts: { zh: '配件', ja: 'パーツ', en: 'Parts' },
+  secStats: { zh: '属性', ja: '性能', en: 'Stats' },
+  secLevel: { zh: '等级', ja: 'レベル', en: 'Level' },
+  secPlan: { zh: '航点规划', ja: '航路計画', en: 'Route planner' },
+
+  fieldMap: { zh: '海域', ja: '海域', en: 'Sea' },
+  durationHM: { zh: '{h} 小时 {m} 分', ja: '{h} 時間 {m} 分', en: '{h}h {m}m' },
+  durationH: { zh: '{h} 小时', ja: '{h} 時間', en: '{h}h' },
+  fieldDuration: { zh: '目标时长', ja: '目標時間', en: 'Target time' },
+  durationHours: { zh: '{n} 小时', ja: '{n} 時間', en: '{n} hours' },
+  btnGenerate: { zh: '生成路线', ja: 'ルート生成', en: 'Generate route' },
+  btnGenerating: { zh: '计算中…', ja: '計算中…', en: 'Working…' },
+  btnClear: { zh: '清除', ja: 'クリア', en: 'Clear' },
+
+  fieldMode: { zh: '规划模式', ja: '計画モード', en: 'Planning mode' },
+  mode_value: { zh: '价值优先', ja: '売却額優先', en: 'Value first' },
+  mode_target: { zh: '目标掉落优先', ja: '目標ドロップ優先', en: 'Target drops first' },
+  thValueTarget: { zh: '目标掉落/趟', ja: '目標/航海', en: 'Targets/voyage' },
+  targetSearchPlaceholder: {
+    zh: '搜索全部掉落物，点选加入目标…',
+    ja: '全ドロップから検索して目標に追加…',
+    en: 'Search every drop to add a target…',
+  },
+  targetEmpty: {
+    zh: '还没有目标 —— 在上方搜索框里找到想要的掉落物并点选。',
+    ja: '目標が未選択です。上の検索欄でアイテムを探して追加してください。',
+    en: 'No targets yet — search above and pick the drops you want.',
+  },
+  targetRemove: { zh: '移除这个目标', ja: 'この目標を外す', en: 'Remove this target' },
+  targetOnMap: { zh: '本地图 {n} 个航点', ja: '本地図 {n} 航点', en: '{n} stops on this sea' },
+  targetNotHere: { zh: '本地图不掉落', ja: '本地図ではドロップなし', en: 'not on this sea' },
+  targetNoMatch: { zh: '没有匹配的掉落物', ja: '一致するドロップはありません', en: 'No matching drops' },
+  targetLine: { zh: '目标掉落：{items}', ja: '目標ドロップ：{items}', en: 'Target drops: {items}' },
+  targetNone: {
+    zh: '这条航线不掉落所选目标。',
+    ja: 'この航路では選択した目標はドロップしません。',
+    en: 'This route drops none of the selected targets.',
+  },
+  targetNeeded: {
+    zh: '目标掉落优先模式需要先选择至少一个目标掉落物。',
+    ja: '目標ドロップ優先モードでは、目標を1つ以上選んでください。',
+    en: 'Target mode needs at least one target drop selected.',
+  },
+  targetMissing: {
+    zh: '当前海域没有等级达标的航点掉落所选目标，换一个海图或目标。',
+    ja: 'この海域には選択した目標をドロップする到達可能な航点がありません。海域か目標を変えてください。',
+    en: 'No reachable stop on this sea drops the selected targets — try another sea or target.',
+  },
+  targetQtyCell: { zh: '{n} 个', ja: '{n} 個', en: '{n}' },
+  targetCount: { zh: '已选 {n} 个目标', ja: '目標 {n} 件を選択中', en: '{n} targets selected' },
+  targetCardsHead: {
+    zh: '目标掉落 · 每趟期望件数',
+    ja: '目標ドロップ · 1航海あたりの期待数',
+    en: 'Target drops · expected per voyage',
+  },
+  targetCardsTotal: {
+    zh: '每趟合计 {units} 个 · 已选 {n} 个目标',
+    ja: '1航海合計 {units} 個 · 目標 {n} 件',
+    en: '{units} per voyage · {n} targets',
+  },
+  targetCardUnits: { zh: '每趟 {units} 个', ja: '1航海 {units} 個', en: '{units} per voyage' },
+  targetCardGil: { zh: '≈ {gil} gil/趟', ja: '≈ {gil} gil/航海', en: '≈ {gil} gil/voyage' },
+  targetCardMissing: { zh: '本航线不掉落', ja: 'この航路ではドロップなし', en: 'not on this route' },
+
+  thSector: { zh: '航点', ja: '航点', en: 'Destination' },
+  thMap: { zh: '海域', ja: '海域', en: 'Sea' },
+  thRank: { zh: '需求等级', ja: '必要レベル', en: 'Required Lv.' },
+  thUnlock: { zh: '解锁自', ja: '解放条件', en: 'Unlocked from' },
+  thSurvey: { zh: '调查耗时', ja: '調査時間', en: 'Survey time' },
+  thExp: { zh: '经验', ja: '経験値', en: 'EXP' },
+  thCeruleum: { zh: '青磷水', ja: 'セルリアン', en: 'Ceruleum' },
+  thValue: { zh: '掉落估值', ja: 'ドロップ評価', en: 'Drop value' },
+  thStatus: { zh: '状态', ja: '状態', en: 'Status' },
+
+  noVessels: {
+    zh: '没有可用的潜艇配置，点下方「添加配置」新建一条。',
+    ja: '利用できるサブマリン設定がありません。下の「設定を追加」から作成してください。',
+    en: 'No submersible setups yet — use “Add setup” below to create one.',
+  },
+  addConfig: { zh: '＋ 添加配置', ja: '＋ 設定を追加', en: '+ Add setup' },
+  restoreAll: { zh: '恢复全部', ja: 'すべて復元', en: 'Restore all' },
+  restoreTitle: { zh: '恢复 {n} 套已删除的配置', ja: '削除した設定 {n} 件を復元', en: 'Restore {n} deleted setups' },
+  shipCount: { zh: '{n} 艘', ja: '{n} 隻', en: '{n} boats' },
+  pillTitle: { zh: '槽位 {slots} 使用同一套配置', ja: 'スロット {slots} が同じ設定です', en: 'Slots {slots} share this setup' },
+  deleteOne: { zh: '删除这套配置', ja: 'この設定を削除', en: 'Delete this setup' },
+  deleteMany: { zh: '删除这套配置（{n} 艘潜艇）', ja: 'この設定を削除（サブマリン {n} 隻）', en: 'Delete this setup ({n} boats)' },
+  manualConfig: { zh: '手动配置', ja: '手動設定', en: 'Manual setup' },
+  notEquipped: { zh: '未装备', ja: '未装備', en: 'Unequipped' },
+  unknownPart: { zh: '未装备 #{id}', ja: '未装備 #{id}', en: 'Unequipped #{id}' },
+  unknownPartOption: { zh: '未知部件 #{id}', ja: '不明なパーツ #{id}', en: 'Unknown part #{id}' },
+  emptyOption: { zh: '— 未装备 —', ja: '— 未装備 —', en: '— None —' },
+
+  btnFetchPrices: { zh: '重新获取价格', ja: '価格を再取得', en: 'Refresh prices' },
+  fetching: { zh: '获取中…', ja: '取得中…', en: 'Fetching…' },
+  fetchTitle: {
+    zh: '忽略已有缓存，重新向 Universalis 查询当前海域的全部掉落价',
+    ja: 'キャッシュを無視して、現在の海域の全ドロップ価格を Universalis に問い合わせます',
+    en: 'Ignore the cache and re-query Universalis for every drop on the current sea',
+  },
+  priceFailed: { zh: '价格读取失败：{err}', ja: '価格の取得に失敗しました：{err}', en: 'Could not read prices: {err}' },
+  priceReadFailed: { zh: '价格读取失败', ja: '価格の取得に失敗しました', en: 'Could not read prices' },
+  noPricesYet: {
+    zh: '尚未获取价格，勾选航点或点上方按钮。',
+    ja: '価格は未取得です。航点を選ぶか上のボタンを押してください。',
+    en: 'No prices yet — pick destinations or use the button above.',
+  },
+  pricesUpdatedAt: { zh: '价格更新于 {time}', ja: '価格の更新：{time}', en: 'Prices updated {time}' },
+
+  slot_hull: { zh: '船体', ja: '船体', en: 'Hull' },
+  slot_stern: { zh: '船尾', ja: '船尾', en: 'Stern' },
+  slot_bow: { zh: '舰首', ja: '艦首', en: 'Bow' },
+  slot_bridge: { zh: '舰桥', ja: '艦橋', en: 'Bridge' },
+  stat_surveillance: { zh: '探索', ja: '探索', en: 'Surveillance' },
+  stat_retrieval: { zh: '收集', ja: '収集', en: 'Retrieval' },
+  stat_speed: { zh: '速度', ja: '速度', en: 'Speed' },
+  stat_range: { zh: '航程', ja: '航行距離', en: 'Range' },
+  stat_durability: { zh: '耐久', ja: '耐久力', en: 'Durability' },
+  stat_favor: { zh: '恩惠', ja: '恩恵', en: 'Favor' },
+    desc_surveillance: {
+    zh: '达到一定值后有概率获得更高级的物品。',
+    ja: '一定値に達すると、より上位のアイテムを入手できる場合があります。',
+    en: 'once high enough, you may obtain rarer items',
+  },
+  desc_retrieval: {
+    zh: '达到一定值后有概率提高获得物品的数量（部分物品无效）。',
+    ja: '一定値に達すると、入手数が増える場合があります（一部アイテムを除く）。',
+    en: 'once high enough, you may receive larger stacks (some items excepted)',
+  },
+  desc_speed: {
+    zh: '减少探索时间。',
+    ja: '探索時間を短縮します。',
+    en: 'shortens survey time',
+  },
+  desc_range: {
+    zh: '可以到达更远的地点或更多的地点。',
+    ja: 'より遠く、より多くの地点へ到達できます。',
+    en: 'lets you reach farther and more destinations',
+  },
+  desc_durability: { zh: '', ja: '', en: '' },
+  desc_favor: {
+    zh: '达到一定值后有概率获取第二件物品；到达某个阈值必定获得第二件物品。',
+    ja: '一定値に達すると、2つ目のアイテムを入手できる場合があります。閾値に達すると必ず入手できます。',
+    en: 'once high enough, a second item may drop; past a threshold it always does',
+  },
+  statSub: { zh: '部件 {parts} · 等级 {level}', ja: 'パーツ {parts} · レベル {level}', en: 'Parts {parts} · Level {level}' },
+  partTier: { zh: '部件阶级：{tiers}', ja: 'パーツ階級：{tiers}', en: 'Part grades: {tiers}' },
+
+  expProgress: { zh: '{exp} / {max} 经验', ja: '{exp} / {max} 経験値', en: '{exp} / {max} EXP' },
+  simLevel: { zh: '模拟等级', ja: 'レベルを試算', en: 'Simulated level' },
+  levelCovers: { zh: '等级满足 {a} / {b} 个航点', ja: 'レベル条件を満たす航点 {a} / {b}', en: 'Level meets {a} of {b} destinations' },
+
+  selectVesselFirst: { zh: '请先选择潜水艇', ja: '先にサブマリンを選択してください', en: 'Pick a submersible first' },
+  needLevel: { zh: '需 Lv.{rank}', ja: 'Lv.{rank} 必要', en: 'Needs Lv.{rank}' },
+  selectedTag: { zh: '已选', ja: '選択中', en: 'Selected' },
+  maxPointsTag: { zh: '最多 {n} 点', ja: '最大 {n} 地点', en: 'Max {n} stops' },
+  outOfRange: { zh: '超出航程 {d}/{r}', ja: '航行距離超過 {d}/{r}', en: 'Over range {d}/{r}' },
+  outOfRangeTitle: {
+    zh: '超出潜水艇航程上限，无法加入这条航线',
+    ja: 'サブマリンの航行距離を超えるため、この航路には追加できません',
+    en: 'Over the range limit, so it cannot join this route',
+  },
+  availableTag: { zh: '可选', ja: '選択可', en: 'Available' },
+  lockedCannotPick: { zh: '需 Lv.{rank}，无法选择', ja: 'Lv.{rank} 必要のため選択できません', en: 'Needs Lv.{rank} to select' },
+  unlockDefault: { zh: '默认解锁', ja: '初期解放', en: 'Default' },
+  unlockMap: { zh: '需上一海域末期点位', ja: '前の海域の終盤地点が必要', en: 'Requires a late stop on the previous sea' },
+  unknownCondition: { zh: '条件未知', ja: '条件不明', en: 'Unknown condition' },
+  minutes: { zh: '{n} 分', ja: '{n} 分', en: '{n} min' },
+  skipCheap: { zh: '{n} 件低于 {v} gil', ja: '{n} 件は {v} gil 未満', en: '{n} items under {v} gil' },
+  skipUnpriced: { zh: '{n} 件无报价', ja: '{n} 件は価格なし', en: '{n} items unpriced' },
+  counted: { zh: '计入 {a}/{b} 件', ja: '{a}/{b} 件を計上', en: '{a} of {b} items counted' },
+  bandText: { zh: '探索档位 {band}', ja: '探索段階 {band}', en: 'Surveillance band {band}' },
+  poolLanding: { zh: '落池 {odds}', ja: '抽選先 {odds}', en: 'lands in {odds}' },
+  poolLandingParen: { zh: '（落池 {odds}）', ja: '（抽選先 {odds}）', en: ' (lands in {odds})' },
+  poolN: { zh: '{n}池 {pct}%', ja: 'プール{n} {pct}%', en: 'pool {n} {pct}%' },
+  poolSource: { zh: '{code} {name} {n}池', ja: '{code} {name} プール{n}', en: '{code} {name} pool {n}' },
+  lootMeta: {
+    zh: '{lead}（沉船首饰按商店回收价，不受单价门槛限制） · {tier}，按收集档折算{favors} · 单价低于 {v} gil 的物品不计入{repair}',
+    ja: '{lead}（沈没船の装飾品は店売り価格で計算し、単価の下限は適用しません） · {tier}、収集段階で換算{favors} · 単価 {v} gil 未満のアイテムは除外{repair}',
+    en: '{lead} (wrecked jewellery uses vendor prices and is exempt from the cutoff) · {tier}, scaled by retrieval band{favors} · items under {v} gil are excluded{repair}',
+  },
+  repairDeduct: {
+    zh: ' · 已扣耐久修理 {per} 个材料 ≈ {gil} gil',
+    ja: ' · 耐久修理 {per} 個相当 ≈ {gil} gil を控除済み',
+    en: ' · {per} repair materials ≈ {gil} gil already deducted',
+  },
+  favoredText: {
+    zh: '恩惠达标，第二件按实测 {pct}% 折算',
+    ja: '恩恵達成、2件目は実測 {pct}% で計上',
+    en: 'favour met — second item counted at the measured {pct}%',
+  },
+  favoredSuffix: {
+    zh: '，恩惠达标，第二件按实测 {pct}% 折算',
+    ja: '、恩恵達成、2件目は実測 {pct}% で計上',
+    en: ', favour met — second item counted at the measured {pct}%',
+  },
+  notFavoredText: { zh: '恩惠未达标', ja: '恩恵未達成', en: 'favour not met' },
+
+  noStops: { zh: '尚未选择航点', ja: '航点が未選択です', en: 'No destinations picked' },
+  noStopsHint: {
+    zh: '单次航线最多 {n} 个点位，勾选后显示航程与收益估算。',
+    ja: '1航路は最大 {n} 地点です。選択すると航行時間と収益の見積もりを表示します。',
+    en: 'One route covers up to {n} stops; tick them to see time and value.',
+  },
+  pickedCount: { zh: '已选 {n} / {max} 个点位', ja: '{n} / {max} 地点を選択中', en: '{n} / {max} stops selected' },
+  seaChart: { zh: '海图：{name}', ja: '海図：{name}', en: 'Sea chart: {name}' },
+  etaLine: {
+    zh: '预计航程 <b>{time}</b> · 总经验 <b>{exp}</b>',
+    ja: '所要時間 <b>{time}</b> · 経験値合計 <b>{exp}</b>',
+    en: 'Voyage <b>{time}</b> · Total EXP <b>{exp}</b>',
+  },
+  netLine: {
+    zh: '净收益 <b>{gil} gil</b> · 青磷水 <b>{fuel}</b>',
+    ja: '純収益 <b>{gil} gil</b> · セルリアン <b>{fuel}</b>',
+    en: 'Net <b>{gil} gil</b> · Ceruleum <b>{fuel}</b>',
+  },
+  grossNote: {
+    zh: '（掉落 {gross} − 修理 {repair}）',
+    ja: '（ドロップ {gross} − 修理 {repair}）',
+    en: ' (drops {gross} − repairs {repair})',
+  },
+  repairLine: {
+    zh: '修理：每次修理消耗 {materials} 个魔导修理材料，按当前消耗约 {voyages} 趟一次，折合每趟 {per} 个',
+    ja: '修理：1回の修理で魔導修理材 {materials} 個を消費し、現在の消耗なら約 {voyages} 航海に1回、1航海あたり {per} 個',
+    en: 'Repairs: {materials} magitek repair materials per repair, roughly one every {voyages} voyages — {per} per voyage',
+  },
+  repairNoPrice: { zh: '（材料价格未取到）', ja: '（材料の価格は未取得）', en: '(material price unavailable)' },
+  cycleLine: { zh: '收放周期：{text}', ja: '運航周期：{text}', en: 'Cycle: {text}' },
+  cycleText: {
+    zh: '≈ {cycle} × {hours}h，比整点早 {minutes} 分',
+    ja: '≈ {cycle} × {hours}時間、毎時ちょうどより {minutes} 分早い',
+    en: '≈ {cycle} × {hours}h, {minutes} min ahead of the hour',
+  },
+  rangeLine: { zh: '航程占用：{d} / {r}', ja: '航行距離：{d} / {r}', en: 'Range used: {d} / {r}' },
+  rangeOver: { zh: '（超出上限，无法出发）', ja: '（上限超過のため出航できません）', en: ' (over the limit — cannot depart)' },
+  expPctLine: {
+    zh: '约占当前等级升级所需经验的 {pct}%',
+    ja: '現在のレベルの必要経験値の約 {pct}%',
+    en: 'About {pct}% of the EXP needed for the next level',
+  },
+  routeLine: { zh: '路线：{route}', ja: '航路：{route}', en: 'Route: {route}' },
+  effLine: {
+    zh: '效率：{exp} 经验/小时 · {gil} gil/小时',
+    ja: '効率：{exp} 経験値/時 · {gil} gil/時',
+    en: 'Efficiency: {exp} EXP/h · {gil} gil/h',
+  },
+  nextUnlock: { zh: '下一个可解锁航点：{name}', ja: '次に解放できる航点：{name}', en: 'Next destination to unlock: {name}' },
+  needLevelFor: { zh: '需要 Lv.{rank}（当前 Lv.{level}）', ja: 'Lv.{rank} 必要（現在 Lv.{level}）', en: 'Needs Lv.{rank} (currently Lv.{level})' },
+  allUnlocked: {
+    zh: '当前等级已满足全部航点的等级要求',
+    ja: '現在のレベルで全航点の条件を満たしています',
+    en: 'The current level meets every destination’s requirement',
+  },
+  stillLocked: { zh: '仍有 {n} 个航点等级不足', ja: 'まだ {n} 航点がレベル不足です', en: '{n} destinations still need a higher level' },
+
+  noValuables: {
+    zh: '该航线暂无可估价的掉落（单价均低于 {v} gil 或价格未取到）。',
+    ja: 'この航路に評価可能なドロップはありません（単価が {v} gil 未満、または価格未取得）。',
+    en: 'Nothing on this route can be valued (all under {v} gil, or unpriced).',
+  },
+  lootTotal: { zh: '预计掉落价值 {v} gil', ja: 'ドロップ想定額 {v} gil', en: 'Estimated drop value {v} gil' },
+  lootTotalNet: {
+    zh: '预计掉落价值 {v} gil · 扣修理后 <b>{net} gil</b>',
+    ja: 'ドロップ想定額 {v} gil · 修理費控除後 <b>{net} gil</b>',
+    en: 'Estimated drop value {v} gil<br><b>{net} gil</b> after repairs',
+  },
+  localDc: { zh: '本地大区', ja: 'ローカルDC', en: 'local DC' },
+  vendorPrice: { zh: '商店回收价', ja: '店売り価格', en: 'vendor price' },
+  lootMetaLead: { zh: '价格：Universalis · {dc} · ', ja: '価格：Universalis · {dc} · ', en: 'Prices: Universalis · {dc} · ' },
+  fromSources: { zh: '来自 {sources}', ja: '{sources} より', en: 'From {sources}' },
+  slowNote: { zh: '大区日成交 {v} 件，较难出手', ja: 'DCの日次取引 {v} 件、売れにくい', en: '{v}/day across the DC — slow to sell' },
+  slowTitle: {
+    zh: '该物品整个大区日均成交 {v} 件，低于 {n} 件。估值仍按市场价计算，但实际卖出可能很慢。',
+    ja: 'このアイテムはDC全体で1日平均 {v} 件しか取引されておらず、{n} 件を下回ります。評価額は市場価格のままですが、実際に売れるまで時間がかかる可能性があります。',
+    en: 'This item trades {v} times a day across the whole DC, below {n}. The valuation still uses the market price, but selling may be slow.',
+  },
+  lootUnit: { zh: '{units} 个 × {price} = ', ja: '{units} 個 × {price} = ', en: '{units} × {price} = ' },
+  qtyTag: { zh: '数量 {label} {range}', ja: '数量 {label} {range}', en: 'Qty {label} {range}' },
+  qtyRange: { zh: '{a}–{b} 个', ja: '{a}–{b} 個', en: '{a}–{b}' },
+  ret_0: { zh: '收集差', ja: '収集・低', en: 'retrieval low' },
+  ret_1: { zh: '收集普通', ja: '収集・標準', en: 'retrieval standard' },
+  ret_2: { zh: '收集最优', ja: '収集・最良', en: 'retrieval best' },
+  band_0: { zh: '达不到 T2', ja: 'T2未満', en: 'below T2' },
+  band_1: { zh: '达到 T2', ja: 'T2到達', en: 'reaches T2' },
+  band_2: { zh: '达到 T3', ja: 'T3到達', en: 'reaches T3' },
+
+  noRouteRange: {
+    zh: '没有航程在航程上限 {r} 内的航点组合（最近的也要 {d}）。',
+    ja: '航行距離上限 {r} に収まる組み合わせがありません（最短でも {d}）。',
+    en: 'No combination fits the {r} range (the closest needs {d}).',
+  },
+  noRoute: { zh: '没有找到可用航点', ja: '利用できる航点が見つかりません', en: 'No usable destinations found' },
+  autoMap: { zh: '自动规划海域：{name}', ja: '自動選定海域：{name}', en: 'Planned on {name}' },
+  cycleMiss: {
+    zh: '在可选航点内无法贴合 {h}h 周期，最接近的是 {time}（比整点早 {m} 分）。',
+    ja: '選択可能な航点では {h}時間周期に合わせられません。最も近いのは {time}（毎時ちょうどより {m} 分早い）です。',
+    en: 'Cannot match a {h}h cycle with the available destinations; closest is {time} ({m} min ahead of the hour).',
+  },
+
+  jsonParseFailed: { zh: 'JSON 解析失败：{err}', ja: 'JSON の解析に失敗しました：{err}', en: 'Could not parse JSON: {err}' },
+  dataImported: { zh: '数据已导入', ja: 'データを読み込みました', en: 'Data imported' },
+  autoretainerRaw: {
+    zh: '这是 AutoRetainer 原始配置，请放到插件配置目录后点“重新读取”。',
+    ja: 'これは AutoRetainer の生設定です。プラグインの設定フォルダに置いて「再読み込み」を押してください。',
+    en: 'This is a raw AutoRetainer config — place it in the plugin config folder, then press Reload.',
+  },
+  unknownFormat: {
+    zh: '无法识别的数据格式：需要包含 parts / sectors 字段',
+    ja: '認識できない形式です：parts / sectors フィールドが必要です',
+    en: 'Unrecognised format — expected parts / sectors fields',
+  },
+  staticSource: { zh: '静态托管 · 未连接本地服务', ja: '静的ホスティング · ローカルサービス未接続', en: 'Static hosting · no local service' },
+  staticBadge: {
+    zh: '静态模式 · 示例潜艇，可手动改配置',
+    ja: '静的モード · サンプルのサブマリン（設定は手動で変更可）',
+    en: 'Static mode · sample submersible, edit it freely',
+  },
+  staticBadgeTitle: {
+    zh: 'GitHub Pages 等静态托管读不到本机的 AutoRetainer 配置；价格直接向 Universalis 查询。',
+    ja: 'GitHub Pages などの静的ホスティングではローカルの AutoRetainer 設定を読めません。価格は Universalis に直接問い合わせます。',
+    en: 'Static hosting such as GitHub Pages cannot read a local AutoRetainer config; prices are queried from Universalis directly.',
+  },
+  readFailed: { zh: '读取失败', ja: '読み込み失敗', en: 'Read failed' },
+  demoBadge: { zh: '示例数据 · 未找到 AutoRetainer', ja: 'サンプルデータ · AutoRetainer が見つかりません', en: 'Sample data · AutoRetainer not found' },
+  arBadge: {
+    zh: 'AutoRetainer · {vessels} 艘 / {groups} 种配置',
+    ja: 'AutoRetainer · {vessels} 隻 / {groups} 設定',
+    en: 'AutoRetainer · {vessels} boats / {groups} setups',
+  },
+  cannotConnect: { zh: '无法连接本地服务', ja: 'ローカルサービスに接続できません', en: 'Cannot reach the local service' },
+  viewWorld: { zh: '世界 / 大区', ja: 'ワールド / DC', en: 'World / DC' },
+  langLabel: { zh: '语言', ja: '言語', en: 'Language' },
 };
+
+function t(key, vars) {
+  const entry = I18N[key];
+  let s = entry ? entry[state.lang] || entry.zh : key;
+  if (vars) {
+    for (const [k, v] of Object.entries(vars)) s = s.split(`{${k}}`).join(String(v));
+  }
+  return s;
+}
+
+// Names come from the data files as `{ names: {zh, ja, en} }`; the older single `name` fields stay
+// as the fallback so a hand-edited import still renders.
+function localized(obj, fallback) {
+  const names = obj && obj.names;
+  const value = names && names[state.lang];
+  return value || (obj && obj.name) || fallback || '';
+}
+
+function slotLabel(key) {
+  return t(`slot_${key}`);
+}
+function statLabel(key) {
+  return t(`stat_${key}`);
+}
+function statDesc(key) {
+  return t(`desc_${key}`);
+}
+function bandLabel(tier) {
+  return t(`band_${tier}`);
+}
+function retLabel(tier) {
+  return t(`ret_${tier}`);
+}
+
+// "pool 1 51% / pool 2 33%" for one draw distribution, shared by the tooltip and the loot header.
+function poolOddsText(drawings) {
+  return [
+    ...new Set(
+      drawings.map((d) =>
+        d.weights
+          .map((w, i) => (w > 0 ? t('poolN', { n: i + 1, pct: Math.round(w * 100) }) : null))
+          .filter(Boolean)
+          .join(' / ')
+      )
+    ),
+  ];
+}
 
 const state = {
   data: null,
@@ -30,6 +414,10 @@ const state = {
   hidden: new Set(),
   overrides: {},
   selected: new Set(),
+  // Planning mode: 'value' ranks routes by gil, 'target' ranks by expected units of the items the
+  // user asked for. The target ids need no prices, so they are stored on their own.
+  mode: 'value',
+  targets: new Set(),
   partsIndex: new Map(),
   mapFilter: '',
   world: '',
@@ -40,6 +428,8 @@ const state = {
   priceError: '',
   marketDcs: [],
   cycleHours: 24,
+  lang: 'zh',
+  sourceInfo: null,
   // Static hosting has no server.js, so there is no AutoRetainer config and no price proxy.
   // Detected once at boot: the UI then runs on the built-in sample vessel and calls
   // Universalis directly (it allows cross-origin reads).
@@ -66,7 +456,7 @@ function el(tag, className, text) {
 }
 
 function fmt(n) {
-  return Number(n || 0).toLocaleString('zh-CN');
+  return Number(n || 0).toLocaleString(LOCALES[state.lang] || LOCALES.zh);
 }
 
 function loadStored() {
@@ -76,6 +466,8 @@ function loadStored() {
     const saved = JSON.parse(raw);
     state.overrides = saved.overrides || {};
     state.selected = new Set(saved.selected || []);
+    if (saved.mode === 'target' || saved.mode === 'value') state.mode = saved.mode;
+    state.targets = new Set(saved.targets || []);
     state.cycleHours = Number(saved.cycleHours) || 24;
     state.world = saved.world || '';
     state.slots = Array.isArray(saved.slots) ? saved.slots : [];
@@ -83,6 +475,7 @@ function loadStored() {
     state.prices = saved.prices || {};
     state.pricesAt = saved.pricesAt || {};
     state.pricesFetchedAt = Number(saved.pricesFetchedAt) || 0;
+    if (LANGS.includes(saved.lang)) state.lang = saved.lang;
   } catch (_) {
     /* ignore corrupt storage */
   }
@@ -92,8 +485,11 @@ function persist() {
   const payload = {
     overrides: state.overrides,
     selected: [...state.selected],
+    mode: state.mode,
+    targets: [...state.targets],
     cycleHours: state.cycleHours,
     world: state.world,
+    lang: state.lang,
     // Manual slots have no config behind them, so they only survive through localStorage.
     slots: state.slots.filter((s) => s.manual),
     // AutoRetainer slots cannot be deleted from the config, so "deleted" ones are hidden here.
@@ -115,7 +511,7 @@ function buildPartsIndex() {
   const parts = state.data.parts || {};
   for (const slot of SLOT_KEYS) {
     for (const part of parts[slot] || []) {
-      state.partsIndex.set(Number(part.id), { slot, part, label: part.nameZh || part.name });
+      state.partsIndex.set(Number(part.id), { slot, part, label: localized(part) });
     }
   }
   state.maxExp = new Map((state.data.ranks || []).map((r) => [r.rank, r.expToNext]));
@@ -149,10 +545,12 @@ function partCode(partId, lang) {
   return group >= 5 ? base + (lang === 'zh' ? '改' : '+') : base;
 }
 
-// Shown in parentheses in the UI: both spellings at once, e.g. 1改/S+.
+// Both spellings at once, e.g. 1改/S+. The Chinese half is only useful to a Chinese reader, so the
+// other two languages show the single code they use themselves.
 function partLabel(partId) {
-  const zh = partCode(partId, 'zh');
-  return zh ? `${zh}/${partCode(partId, 'en')}` : '';
+  const real = partCode(partId, 'zh');
+  if (!real) return '';
+  return state.lang === 'zh' ? `${real}/${partCode(partId, 'en')}` : partCode(partId, 'en');
 }
 
 // A row in the list stands for one configuration. The part codes carry the tier already
@@ -202,7 +600,7 @@ function currentParts(v) {
     const hit = state.partsIndex.get(Number(id));
     return hit
       ? { id: Number(id), slot: hit.slot, ...hit.part, label: hit.label }
-      : { id: Number(id), slot: null, name: `未装备 #${id}`, label: '未装备', surveillance: 0, retrieval: 0, speed: 0, range: 0, durability: 0, favor: 0, tier: '—' };
+      : { id: Number(id), slot: null, name: t('unknownPart', { id }), label: t('notEquipped'), surveillance: 0, retrieval: 0, speed: 0, range: 0, durability: 0, favor: 0, tier: '—' };
   });
 }
 
@@ -216,9 +614,9 @@ function currentStats(v) {
   const ov = overrideFor(v);
   const bonus = rankBonus(ov.level);
   const total = {};
-  for (const [key] of STAT_KEYS) total[key] = Number(bonus[key] || 0);
+  for (const key of STAT_KEYS) total[key] = Number(bonus[key] || 0);
   for (const p of parts) {
-    for (const [key] of STAT_KEYS) total[key] += Number(p[key] || 0);
+    for (const key of STAT_KEYS) total[key] += Number(p[key] || 0);
   }
   return { parts, total, bonus };
 }
@@ -249,7 +647,7 @@ function renderVessels() {
   host.innerHTML = '';
   const groups = mergeSlots(visibleSlots());
   if (!groups.length) {
-    host.append(el('p', 'empty', '没有可用的潜艇配置，点下方「添加配置」新建一条。'));
+    host.append(el('p', 'empty', t('noVessels')));
   }
   groups.forEach((group) => {
     const v = group[0];
@@ -261,8 +659,8 @@ function renderVessels() {
     const right = el('div', 'vessel-pills');
     // The level is already in the row label; the pill counts how many slots share this config.
     if (group.length > 1) {
-      const pill = el('span', 'pill', `${group.length} 艘`);
-      pill.title = `槽位 ${group.map((s) => s.slot + 1).join('、')} 使用同一套配置`;
+      const pill = el('span', 'pill', t('shipCount', { n: group.length }));
+      pill.title = t('pillTitle', { slots: group.map((s) => s.slot + 1).join(', ') });
       right.append(pill);
     }
     row.addEventListener('click', () => {
@@ -270,7 +668,7 @@ function renderVessels() {
       renderAll();
     });
     const del = el('button', 'vessel-del', '✕');
-    del.title = group.length > 1 ? `删除这套配置（${group.length} 艘潜艇）` : '删除这套配置';
+    del.title = group.length > 1 ? t('deleteMany', { n: group.length }) : t('deleteOne');
     del.addEventListener('click', (e) => {
       e.stopPropagation();
       deleteGroups([group]);
@@ -281,13 +679,13 @@ function renderVessels() {
   });
 
   const tools = el('div', 'vessel-tools');
-  const add = el('button', 'btn', '＋ 添加配置');
+  const add = el('button', 'btn', t('addConfig'));
   add.addEventListener('click', addSlot);
   tools.append(add);
   // Only offered once the user has hidden something, so there is a way back.
   if (state.hidden.size) {
-    const undo = el('button', 'btn', '恢复全部');
-    undo.title = `恢复 ${state.hidden.size} 套已删除的配置`;
+    const undo = el('button', 'btn', t('restoreAll'));
+    undo.title = t('restoreTitle', { n: state.hidden.size });
     undo.addEventListener('click', () => {
       state.hidden.clear();
       persist();
@@ -325,7 +723,7 @@ function addSlot() {
   state.slots.push({
     slot: state.slots.length,
     manualId: `${Date.now().toString(36)}-${manualSeq}`,
-    name: '手动配置',
+    name: t('manualConfig'),
     owner: '',
     world: '',
     level: Number(last.level) || 1,
@@ -396,9 +794,9 @@ function renderWorld() {
   host.append(select);
 
   const row = el('div', 'price-row');
-  const reload = el('button', 'btn', state.pricesBusy ? '获取中…' : '重新获取价格');
+  const reload = el('button', 'btn', state.pricesBusy ? t('fetching') : t('btnFetchPrices'));
   reload.disabled = state.pricesBusy || !state.data;
-  reload.title = '忽略已有缓存，重新向 Universalis 查询当前海域的全部掉落价';
+  reload.title = t('fetchTitle');
   reload.addEventListener('click', refreshPrices);
   row.append(reload);
   host.append(row);
@@ -406,9 +804,9 @@ function renderWorld() {
   // Prices are never discarded on a timer, so state clearly how old the figures are.
   const at = state.pricesFetchedAt;
   let note;
-  if (state.priceError) note = `价格读取失败：${state.priceError}`;
-  else if (!at) note = '尚未获取价格，勾选航点或点上方按钮。';
-  else note = `价格更新于 ${fmtTime(at)}`;
+  if (state.priceError) note = t('priceFailed', { err: state.priceError });
+  else if (!at) note = t('noPricesYet');
+  else note = t('pricesUpdatedAt', { time: fmtTime(at) });
   const meta = el('div', 'vessel-meta', note);
   if (state.priceError) meta.classList.add('err-text');
   host.append(meta);
@@ -424,18 +822,18 @@ function renderParts() {
 
   SLOT_KEYS.forEach((slot, slotIndex) => {
     const row = el('div', 'part-row');
-    row.append(el('label', null, SLOT_LABELS[slot]));
+    row.append(el('label', null, slotLabel(slot)));
     const select = document.createElement('select');
     const empty = document.createElement('option');
     empty.value = '0';
-    empty.textContent = '— 未装备 —';
+    empty.textContent = t('emptyOption');
     select.append(empty);
     for (const part of parts[slot] || []) {
       const opt = document.createElement('option');
       opt.value = String(part.id);
       // `partId` is the SubmarinePart row id the code is derived from; `id` is the item id.
-      opt.textContent = `${part.nameZh || part.name}（${partLabel(part.partId)}）`;
-      opt.title = `${part.nameZh || ''} / ${part.name} · 部件 #${part.partId} · 物品 #${part.id}`;
+      opt.textContent = `${localized(part)}${partLabel(part.partId) ? ` (${partLabel(part.partId)})` : ''}`;
+      opt.title = `${localized(part)} · #${part.partId} / #${part.id}`;
       select.append(opt);
     }
     const currentId = String(ov.parts[slotIndex] ?? 0);
@@ -443,7 +841,7 @@ function renderParts() {
     if (select.value !== currentId) {
       const unknown = document.createElement('option');
       unknown.value = currentId;
-      unknown.textContent = `未知部件 #${currentId}`;
+      unknown.textContent = t('unknownPartOption', { id: currentId });
       select.append(unknown);
       select.value = currentId;
     }
@@ -469,16 +867,16 @@ function renderStats() {
   const { parts, total, bonus } = currentStats(v);
 
   const grid = el('div', 'stats-grid');
-  for (const [key, label] of STAT_KEYS) {
+  for (const key of STAT_KEYS) {
     const box = el('div', 'stat');
-    const desc = STAT_DESCRIPTIONS[key];
+    const desc = statDesc(key);
     if (desc) box.title = desc;
-    box.append(el('div', 'stat-label', label));
+    box.append(el('div', 'stat-label', statLabel(key)));
     box.append(el('div', 'stat-value', fmt(total[key])));
     const fromParts = parts.reduce((a, p) => a + Number(p[key] || 0), 0);
-    box.append(el('div', 'stat-sub', `部件 ${fmt(fromParts)} · 等级 ${fmt(bonus[key])}`));
+    box.append(el('div', 'stat-sub', t('statSub', { parts: fmt(fromParts), level: fmt(bonus[key]) })));
     // The in-game effect text, so the numbers mean something without a wiki open.
-    if (desc) box.append(el('div', 'stat-desc', desc.slice(desc.indexOf('：') + 1)));
+    if (desc) box.append(el('div', 'stat-desc', desc));
     grid.append(box);
   }
   host.append(grid);
@@ -486,7 +884,7 @@ function renderStats() {
   const diff = el('div', 'vessel-meta');
   diff.style.marginTop = '10px';
   const tiers = parts.map((p) => p.tier || '?').join(' / ');
-  diff.textContent = `部件阶级：${tiers || '—'}`;
+  diff.textContent = t('partTier', { tiers: tiers || '—' });
   host.append(diff);
 }
 
@@ -509,13 +907,13 @@ function renderLevel() {
 
   const meta = el('div', 'level-meta');
   meta.append(el('span', null, `Lv.${ov.level}`));
-  meta.append(el('span', null, `${fmt(ov.exp)} / ${fmt(expToNext)} 经验`));
+  meta.append(el('span', null, t('expProgress', { exp: fmt(ov.exp), max: fmt(expToNext) })));
   host.append(meta);
 
   const edit = el('div', 'part-row');
   edit.style.marginTop = '10px';
   edit.style.gridTemplateColumns = '48px 1fr';
-  edit.append(el('label', null, '模拟等级'));
+  edit.append(el('label', null, t('simLevel')));
   const input = document.createElement('input');
   input.type = 'number';
   input.min = '0';
@@ -530,7 +928,9 @@ function renderLevel() {
   host.append(edit);
 
   const unlocked = (state.data.sectors || []).filter((s) => ov.level >= s.rank).length;
-  host.append(el('div', 'vessel-meta', `等级满足 ${unlocked} / ${(state.data.sectors || []).length} 个航点`));
+  host.append(
+    el('div', 'vessel-meta', t('levelCovers', { a: unlocked, b: (state.data.sectors || []).length }))
+  );
 }
 
 /* ---------- voyage math (mirrors AutoRetainer's calculator) ---------- */
@@ -562,7 +962,7 @@ function surveySeconds(sector, speed) {
 function fmtDuration(seconds) {
   const h = Math.floor(seconds / 3600);
   const m = Math.round((seconds % 3600) / 60);
-  return m ? `${h} 小时 ${m} 分` : `${h} 小时`;
+  return m ? t('durationHM', { h, m }) : t('durationH', { h });
 }
 
 /* ---------- loot value (Universalis CN, per surveillance/retrieval tier) ---------- */
@@ -600,16 +1000,33 @@ function thresholdsFor(sectorId) {
   return (entry && entry.breakpoints) || null;
 }
 
-// Surveillance moves a sector to a richer pool instead of adding one: the three pools are mutually
-// exclusive tiers of the same draw, not stacked chances. FFXIVGachaSpreadsheet files every voyage
-// record under the single pool its primary drop rolled from (GetSurvTier), and each pool's chances
-// sum to 1 — so exactly one pool produces per visit. Argus reads it the same way in ItemYield.
+// Surveillance does not decide the pool outright — it decides how high a band the voyage rolls
+// into, and the band only sets the ceiling. The crowd data (60M records, one per voyage) shows a
+// build that can reach tier 3 still lands in pool 1 / 2 / 3 about 51% / 33% / 16% of the time.
+// weights[band] is that distribution, baked per sector by tools/bake_band_weights.js, so value
+// has to be summed over all three pools weighted by it rather than read off the top pool alone.
 function surveillanceTier(sectorId, surveillance) {
   const t = thresholdsFor(sectorId);
   if (!t) return 0;
   if (t.t3 > 0 && surveillance >= t.t3) return 2;
   if (t.t2 > 0 && surveillance >= t.t2) return 1;
   return 0;
+}
+
+function bandName(tier) {
+  return ['low', 'mid', 'high'][tier] || 'low';
+}
+
+// Pool probabilities for this vessel's capability band. Sectors with no baked weights predate
+// them or had no crowd samples; treat them as certain to land in the band's best pool, which is
+// what the old model did, rather than silently dropping their value.
+function poolWeights(sectorId, tier) {
+  const entry = lootFor(sectorId);
+  const baked = entry && entry.weights && entry.weights[bandName(tier)];
+  if (Array.isArray(baked) && baked.length === 3) return baked;
+  const fallback = [0, 0, 0];
+  fallback[tier] = 1;
+  return fallback;
 }
 
 function retrievalTier(sectorId, retrieval) {
@@ -624,13 +1041,31 @@ function favorMet(sectorId, favor) {
   return Boolean(t && favor >= t.favor);
 }
 
-// One pool drops per visit. Meeting the favour line lets a second item come back; the crowd data has
-// no per-item probability for it, so the pool's value is scaled by 2 as an approximation.
+// Meeting the favour line does not always yield a second item: the crowd data counts a chance
+// every time favour was satisfied and a double-dip whenever a second one actually came back,
+// which lands around 82% with a surplus. Use that measured rate instead of assuming two items.
+const SECOND_ITEM_FALLBACK = 0.8;
+
+function secondItemChance(sectorId, stats) {
+  if (!favorMet(sectorId, stats.favor)) return 0;
+  const entry = lootFor(sectorId);
+  const rate = entry && Number(entry.secondItem);
+  return rate > 0 ? Math.min(1, rate) : SECOND_ITEM_FALLBACK;
+}
+
+// One pool drops per visit, chosen by the weights above; the favour bonus adds a second draw at
+// the measured rate, so every pool's value is scaled by (1 + secondItemChance).
 function drawCounts(sectorId, stats) {
   const tier = surveillanceTier(sectorId, stats.surveillance);
-  const favored = favorMet(sectorId, stats.favor);
-  const weight = favored ? 2 : 1;
-  return { counts: [{ tier, weight }], total: weight, favorMet: favored };
+  const weights = poolWeights(sectorId, tier);
+  const second = secondItemChance(sectorId, stats);
+  return {
+    weights,
+    total: 1 + second,
+    second,
+    favorMet: favorMet(sectorId, stats.favor),
+    tier,
+  };
 }
 
 function poolFor(sectorId, tier) {
@@ -641,27 +1076,21 @@ function poolFor(sectorId, tier) {
 
 // Expected units per visit: chance * midpoint of the [min,max] range for this retrieval tier.
 // The retrieval band an item's quantity was taken from, for display: 收集差/普通/最优 plus the range.
-const RET_LABELS = ['收集差', '收集普通', '收集最优'];
-
-function qtyBand(itemId, sectorId, stats) {
-  const tier = retrievalTier(sectorId, stats.retrieval);
-  let drop = null;
-  for (const t of [0, 1, 2]) {
-    const hit = poolFor(sectorId, t).find((d) => d.id === itemId);
-    if (hit) { drop = hit; break; }
-  }
+function qtyBand(itemId, sectorId, stats, tier) {
+  const ret = retrievalTier(sectorId, stats.retrieval);
+  const drop = poolFor(sectorId, tier).find((d) => d.id === itemId);
   const q = (drop && drop.qty) || [];
   if (q.length < 6) return null;
   // Mirror expectedUnits' fallback so the label matches the number actually used.
-  let used = tier;
+  let used = ret;
   if ((q[used * 2 + 1] || 0) <= 0) {
     used = -1;
-    for (let t = tier - 1; t >= 0; t -= 1) {
+    for (let t = ret - 1; t >= 0; t -= 1) {
       if ((q[t * 2 + 1] || 0) > 0) { used = t; break; }
     }
   }
   if (used < 0) return null;
-  return { label: RET_LABELS[used], range: `${q[used * 2]}–${q[used * 2 + 1]} 个` };
+  return { label: retLabel(used), range: t('qtyRange', { a: q[used * 2], b: q[used * 2 + 1] }) };
 }
 
 function expectedUnits(drop, retTier) {
@@ -744,18 +1173,21 @@ function isSlowMoving(itemId) {
   return velocity !== null && velocity < LOW_VOLUME_PER_DAY;
 }
 
-// Gil from one visit to a sector: the single pool its surveillance reaches drops, and meeting the
-// favour line doubles that. Items worth less than MIN_UNIT_VALUE are dropped from the sum so bulk
-// raw materials do not crowd out the gear that actually pays.
+// Gil from one visit to a sector: every pool this vessel's band can land in, weighted by how often
+// it does, times the chance the favour bonus brings a second item back. Items worth less than
+// MIN_UNIT_VALUE are dropped from the sum so bulk raw materials do not crowd out the gear that
+// actually pays.
 function sectorValue(sectorId, stats) {
   const ret = retrievalTier(sectorId, stats.retrieval);
-  const { counts, total, favorMet: favored } = drawCounts(sectorId, stats);
+  const { weights, total, favorMet: favored, second } = drawCounts(sectorId, stats);
   let gil = 0;
   let priced = 0;
   let cheap = 0;
   let unpriced = 0;
   let counted = 0;
-  for (const { tier, weight } of counts) {
+  for (const tier of [0, 1, 2]) {
+    const weight = weights[tier];
+    if (!weight) continue;
     for (const drop of poolFor(sectorId, tier)) {
       counted += 1;
       const price = priceOf(drop.id);
@@ -768,12 +1200,14 @@ function sectorValue(sectorId, stats) {
         continue;
       }
       priced += 1;
-      gil += expectedUnits(drop, ret) * price * weight;
+      gil += expectedUnits(drop, ret) * price * weight * (1 + second);
     }
   }
   return {
     gil,
-    tier: counts[0].tier,
+    tier: surveillanceTier(sectorId, stats.surveillance),
+    weights,
+    second,
     ret,
     priced,
     cheap,
@@ -786,23 +1220,77 @@ function sectorValue(sectorId, stats) {
 
 function itemValues(sectorId, stats) {
   const ret = retrievalTier(sectorId, stats.retrieval);
-  const { counts } = drawCounts(sectorId, stats);
+  const { weights, second } = drawCounts(sectorId, stats);
   const rows = [];
-  for (const { tier, weight } of counts) {
+  for (const tier of [0, 1, 2]) {
+    const weight = weights[tier];
+    if (!weight) continue;
     for (const drop of poolFor(sectorId, tier)) {
       const price = priceOf(drop.id);
+      if (price <= 0) continue;
       if (price < MIN_UNIT_VALUE && ignLowValue(drop.id)) continue;
       rows.push({
         id: drop.id,
         name: drop.name,
+        names: drop.names,
         tier,
         vendor: Boolean(VENDOR_PRICES[drop.id]),
-        units: expectedUnits(drop, ret) * weight,
+        units: expectedUnits(drop, ret) * weight * (1 + second),
         price,
       });
     }
   }
   return rows.sort((a, b) => b.units * b.price - a.units * a.price);
+}
+
+// Every item that can drop anywhere, for the target search box. Built once from the loot table;
+// the names dict is language independent, so switching language needs no rebuild.
+function dropCatalog() {
+  if (state.dropCatalog) return state.dropCatalog;
+  const seen = new Map();
+  const sectors = (state.loot && state.loot.sectors) || {};
+  for (const entry of Object.values(sectors)) {
+    for (const pool of Object.values(entry.pools || {})) {
+      for (const drop of pool) {
+        if (!seen.has(drop.id)) seen.set(drop.id, { id: drop.id, name: drop.name, names: drop.names });
+      }
+    }
+  }
+  // The search box matches without regard to case or script, so a precomputed haystack is worth it.
+  state.dropCatalog = [...seen.values()].map((d) => {
+    const n = d.names || {};
+    d.hay = [d.name, n.zh, n.ja, n.en].filter(Boolean).join(' ').toLowerCase();
+    return d;
+  });
+  return state.dropCatalog;
+}
+
+// Expected units of the wanted items from one visit, using exactly the pool weighting and favour
+// rate that sectorValue uses. No prices anywhere: the target mode is about getting the item, not
+// about what it sells for.
+function targetUnits(sectorId, stats, targets) {
+  const ret = retrievalTier(sectorId, stats.retrieval);
+  const { weights, second } = drawCounts(sectorId, stats);
+  const hits = new Map();
+  let units = 0;
+  for (const tier of [0, 1, 2]) {
+    const weight = weights[tier];
+    if (!weight) continue;
+    for (const drop of poolFor(sectorId, tier)) {
+      if (!targets.has(drop.id)) continue;
+      const u = expectedUnits(drop, ret) * weight * (1 + second);
+      units += u;
+      hits.set(drop.id, (hits.get(drop.id) || 0) + u);
+    }
+  }
+  return { units, hits };
+}
+
+// The single place that answers "how good is this stop", so the tour search ranks by whichever
+// mode is active without every call site knowing about it.
+function stopScore(sectorId, stats) {
+  if (state.mode === 'target') return targetUnits(sectorId, stats, state.targets).units;
+  return sectorValue(sectorId, stats).gil;
 }
 
 // Cached prices never expire on their own: Universalis prices move slowly, and a stale figure the
@@ -815,7 +1303,7 @@ async function ensurePrices(ids, { force = false } = {}) {
   const body = state.standalone
     ? await fetchPricesDirect(world, missing)
     : await fetchPricesProxied(world, missing, force);
-  if (!body.ok) throw new Error(body.error || '价格读取失败');
+  if (!body.ok) throw new Error(body.error || t('priceReadFailed'));
   for (const [id, value] of Object.entries(body.prices || {})) {
     state.prices[id] = value;
     // Server-side update time when available, so the display reflects when the data was pulled.
@@ -991,7 +1479,7 @@ function tourKey(score, fit, legal) {
 }
 
 function buildTour(sectorList, stats) {
-  const perStop = new Map(sectorList.map((s) => [s.id, sectorValue(s.id, stats).gil]));
+  const perStop = new Map(sectorList.map((s) => [s.id, stopScore(s.id, stats)]));
   const sumValue = (list) => list.reduce((a, s) => a + (perStop.get(s.id) || 0), 0);
   const speed = stats.speed;
 
@@ -1046,25 +1534,37 @@ function candidateMaps(v) {
   return [...byMap.values()];
 }
 
-// Only the pool this vessel's surveillance reaches can drop, so don't price the other two.
+// Every pool this vessel's band can land in contributes to the valuation, so all of their items
+// need a price. Target mode ranks by units, not gil, so it needs none of them.
 function candidateIds(maps) {
+  if (state.mode === 'target') return [];
   const v = activeVessel();
   const surveillance = v ? vesselStats(v).surveillance : 0;
   const ids = new Set();
   for (const sectors of maps) {
     for (const s of sectors) {
-      for (const drop of poolFor(s.id, surveillanceTier(s.id, surveillance))) ids.add(drop.id);
+      const weights = poolWeights(s.id, surveillanceTier(s.id, surveillance));
+      for (const tier of [0, 1, 2]) {
+        if (!weights[tier]) continue;
+        for (const drop of poolFor(s.id, tier)) ids.add(drop.id);
+      }
     }
   }
   return [...ids];
 }
 
-// The tour search is combinatorial, so each map contributes only its richest stops.
+// The tour search is combinatorial, so each map contributes only its richest stops. Target mode
+// cannot filter out the stops that carry no wanted item — those still set the route's travel time,
+// and a voyage must visit something — so it falls back to gil to order the rest.
 function rankedMaps(v, stats) {
   return candidateMaps(v).map((sectors) =>
     sectors
-      .map((s) => ({ sector: s, value: sectorValue(s.id, stats).gil }))
-      .sort((a, b) => b.value - a.value)
+      .map((s) => ({
+        sector: s,
+        value: stopScore(s.id, stats),
+        gil: sectorValue(s.id, stats).gil,
+      }))
+      .sort((a, b) => b.value - a.value || b.gil - a.gil)
       .slice(0, SEARCH_POOL)
       .map((x) => x.sector)
   );
@@ -1119,10 +1619,79 @@ function routeSummary(ordered) {
   return { seconds, exp, fuel };
 }
 
+// Target mode shows what the voyage actually brings back for the wanted items. The value cards
+// cannot serve that: they drop anything under MIN_UNIT_VALUE, and a cheap target would simply not
+// appear even though the route was planned around it.
+function renderTargetLoot(ordered, stats) {
+  const host = $('#loot-view');
+  const ids = [...state.targets];
+  if (!ids.length) return;
+
+  // Unit counts are the same ones the tour search scored, so the cards explain the route.
+  const perTarget = new Map(ids.map((id) => [id, { id, units: 0, pools: [] }]));
+  for (const s of ordered) {
+    const { hits } = targetUnits(s.id, stats, state.targets);
+    for (const [id, units] of hits) {
+      const cur = perTarget.get(id);
+      if (!cur) continue;
+      cur.units += units;
+      for (const tier of [0, 1, 2]) {
+        if (!poolFor(s.id, tier).some((d) => d.id === id)) continue;
+        cur.pools.push({ tier, sectorId: s.id, sector: s });
+      }
+    }
+  }
+  const list = [...perTarget.values()].sort((a, b) => b.units - a.units);
+  const total = list.reduce((a, r) => a + r.units, 0);
+
+  const head = el('div', 'loot-head');
+  head.append(el('div', null, t('targetCardsHead')));
+  head.append(
+    el('div', 'vessel-meta', t('targetCardsTotal', { units: total.toFixed(2), n: ids.length }))
+  );
+  host.append(head);
+
+  const grid = el('div', 'loot-grid');
+  for (const r of list) {
+    const drop = targetById(r.id);
+    const box = el('div', `loot-item${r === list[0] && r.units > 0 ? ' top' : ''}`);
+    box.append(el('div', 'loot-name', localized(drop) || `#${r.id}`));
+    if (r.units > 0) {
+      box.append(el('div', 'loot-value', t('targetCardUnits', { units: r.units.toFixed(2) })));
+      const price = priceOf(r.id);
+      // A target may simply have no market price — units are the point, gil is a bonus.
+      if (price > 0) {
+        box.append(el('div', 'loot-value', t('targetCardGil', { gil: fmt(Math.round(r.units * price)) })));
+      }
+      const sources = r.pools
+        .map((p) => t('poolSource', { code: p.sector.code, name: localized(p.sector), n: p.tier + 1 }))
+        .join(', ');
+      box.append(el('div', 'vessel-meta', t('fromSources', { sources })));
+      const tags = new Set();
+      for (const p of r.pools) {
+        const band = qtyBand(r.id, p.sectorId, stats, p.tier);
+        if (!band) continue;
+        const text = t('qtyTag', { label: band.label, range: band.range });
+        if (tags.has(text)) continue;
+        tags.add(text);
+        box.append(el('div', 'loot-tag', text));
+      }
+    } else {
+      box.append(el('div', 'vessel-meta', t('targetCardMissing')));
+    }
+    grid.append(box);
+  }
+  host.append(grid);
+}
+
 function renderLoot(ordered, stats, costs) {
   const host = $('#loot-view');
   if (!host) return;
   host.innerHTML = '';
+  if (state.mode === 'target') {
+    if (ordered.length) renderTargetLoot(ordered, stats);
+    return;
+  }
   if (!ordered.length) return;
 
   const rows = [];
@@ -1134,14 +1703,19 @@ function renderLoot(ordered, stats, costs) {
     }
   }
   if (!rows.length) {
-    host.append(el('div', 'vessel-meta', `该航线暂无可估价的掉落（单价均低于 ${fmt(MIN_UNIT_VALUE)} gil 或价格未取到）。`));
+    host.append(el('div', 'vessel-meta', t('noValuables', { v: fmt(MIN_UNIT_VALUE) })));
     return;
   }
 
   const merged = new Map();
   for (const r of rows) {
-    const cur = merged.get(r.id) || { ...r, units: 0 };
+    const cur = merged.get(r.id) || { ...r, units: 0, pools: [] };
     cur.units += r.units;
+    // The same item can sit in more than one pool of more than one stop; keep each pairing so the
+    // quantity label and the source line stay accurate.
+    if (!cur.pools.some((p) => p.tier === r.tier && p.sectorId === r.sector.id)) {
+      cur.pools.push({ tier: r.tier, sectorId: r.sector.id, sector: r.sector });
+    }
     merged.set(r.id, cur);
   }
   const list = [...merged.values()].sort((a, b) => b.units * b.price - a.units * a.price);
@@ -1150,25 +1724,37 @@ function renderLoot(ordered, stats, costs) {
   const head = el('div', 'loot-head');
   const net = costs && costs.repair ? Math.max(0, total - costs.repair.gil) : null;
   // el() sets textContent, so markup has to be assigned explicitly.
-  const totalLine = el('div', null, `预计掉落价值 ${fmt(Math.round(total))} gil`);
+  const totalLine = el('div', null, t('lootTotal', { v: fmt(Math.round(total)) }));
   if (net !== null) {
-    totalLine.innerHTML = `预计掉落价值 ${fmt(Math.round(total))} gil · 扣修理后 <b>${fmt(Math.round(net))} gil</b>`;
+    totalLine.innerHTML = t('lootTotalNet', { v: fmt(Math.round(total)), net: fmt(Math.round(net)) });
   }
   head.append(totalLine);
-  const dcText = (state.marketDcs || []).join('、') || '本地大区';
-  // Each sector drops from exactly one pool, so the voyage totals one draw per stop.
-  const tiers = [...new Set(drawing.map((d) => d.counts[0].tier + 1))].sort();
-  const favors = drawing.every((d) => d.favored);
-  const tierText = `探索档位 ${tiers.join('/')}`;
+  const dcText = (state.marketDcs || []).join(', ') || t('localDc');
+  // A stop lands in a pool by chance, so show the band the vessel rolls into and where that lands.
+  const bands = [...new Set(drawing.map((d) => bandLabel(d.tier)))].sort();
+  const odds = poolOddsText(drawing);
+  const favors = drawing.every((d) => d.favorMet);
+  const tierText =
+    t('bandText', { band: bands.join('/') }) + t('poolLandingParen', { odds: odds.join(' · ') });
   const repairText =
     costs && costs.repair && costs.repair.gil > 0
-      ? ` · 已扣耐久修理 ${costs.repair.perRepair.toFixed(1)} 个材料 ≈ ${fmt(Math.round(costs.repair.gil))} gil`
+      ? t('repairDeduct', {
+          per: costs.repair.perRepair.toFixed(1),
+          gil: fmt(Math.round(costs.repair.gil)),
+        })
       : '';
+  const favorsText = favors ? t('favoredSuffix', { pct: Math.round((drawing[0].second || 0) * 100) }) : '';
   head.append(
     el(
       'div',
       'vessel-meta',
-      `价格：Universalis · ${dcText}（沉船首饰按商店回收价，不受单价门槛限制） · ${tierText}，按收集档折算${favors ? '，恩惠达标按两件估算' : ''} · 单价低于 ${fmt(MIN_UNIT_VALUE)} gil 的物品不计入${repairText}`
+      t('lootMeta', {
+        lead: t('lootMetaLead', { dc: dcText }),
+        tier: tierText,
+        favors: favorsText,
+        v: fmt(MIN_UNIT_VALUE),
+        repair: repairText,
+      })
     )
   );
   host.append(head);
@@ -1177,20 +1763,31 @@ function renderLoot(ordered, stats, costs) {
   for (const r of list.slice(0, 12)) {
     const slow = isSlowMoving(r.id);
     const box = el('div', `loot-item${r === list[0] ? ' top' : ''}${slow ? ' slow' : ''}`);
-    box.append(el('div', 'loot-name', r.name || `#${r.id}`));
+    box.append(el('div', 'loot-name', localized(r) || `#${r.id}`));
     box.append(
-      el('div', 'loot-value', `${r.units.toFixed(1)} 个 × ${fmt(Math.round(r.price))} = `),
+      el('div', 'loot-value', t('lootUnit', { units: r.units.toFixed(1), price: fmt(Math.round(r.price)) })),
     );
     const strong = el('b', null, `${fmt(Math.round(r.units * r.price))} gil`);
     box.lastChild.append(strong);
     const velocity = saleVelocity(r.id);
-    let note = `来自 ${r.sector.code} ${r.sector.name}${r.vendor ? ' · 商店回收价' : ''}`;
-    if (slow) note += ` · 大区日成交 ${velocity.toFixed(1)} 件，较难出手`;
+    const sources = r.pools
+      .map((p) => t('poolSource', { code: p.sector.code, name: localized(p.sector), n: p.tier + 1 }))
+      .join(', ');
+    let note = t('fromSources', { sources }) + (r.vendor ? ` · ${t('vendorPrice')}` : '');
+    if (slow) note += ` · ${t('slowNote', { v: velocity.toFixed(1) })}`;
     box.append(el('div', 'vessel-meta', note));
-    // Quantity depends on the retrieval tier, so show which band was used and what it yields.
-    const band = qtyBand(r.id, r.sector.id, stats);
-    if (band) box.append(el('div', 'loot-tag', `数量 ${band.label} ${band.range}`));
-    if (slow) box.title = `该物品整个大区日均成交 ${velocity.toFixed(1)} 件，低于 ${LOW_VOLUME_PER_DAY} 件。估值仍按市场价计算，但实际卖出可能很慢。`;
+    // Quantity depends on the retrieval tier, so show each band that contributed. Stops on the same
+    // map often share a band, so dedupe rather than printing the same tag once per stop.
+    const tag = new Set();
+    for (const p of r.pools) {
+      const band = qtyBand(r.id, p.sectorId, stats, p.tier);
+      if (!band) continue;
+      const text = t('qtyTag', { label: band.label, range: band.range });
+      if (tag.has(text)) continue;
+      tag.add(text);
+      box.append(el('div', 'loot-tag', text));
+    }
+    if (slow) box.title = t('slowTitle', { v: velocity.toFixed(1), n: LOW_VOLUME_PER_DAY });
     grid.append(box);
   }
   host.append(grid);
@@ -1200,32 +1797,36 @@ function renderLoot(ordered, stats, costs) {
 function sectorStatus(sector, vessel, stats) {
   const ov = overrideFor(vessel);
   if (ov.level < sector.rank) {
-    return { kind: 'locked', text: `需 Lv.${sector.rank}` };
+    return { kind: 'locked', text: t('needLevel', { rank: sector.rank }) };
   }
-  if (state.selected.has(sector.id)) return { kind: 'ok', text: '已选' };
+  if (state.selected.has(sector.id)) return { kind: 'ok', text: t('selectedTag') };
   if (state.selected.size >= MAX_ROUTE_POINTS) {
-    return { kind: 'blocked', text: `最多 ${MAX_ROUTE_POINTS} 点` };
+    return { kind: 'blocked', text: t('maxPointsTag', { n: MAX_ROUTE_POINTS }) };
   }
   const picked = [...state.selected].map(sectorById).filter(Boolean);
   if (!fitsRange([...picked, sector], stats)) {
     const distance = minRouteDistance([...picked, sector]);
-    return { kind: 'blocked', text: `超出航程 ${distance}/${stats.range}`, title: '超出潜水艇航程上限，无法加入这条航线' };
+    return {
+      kind: 'blocked',
+      text: t('outOfRange', { d: distance, r: stats.range }),
+      title: t('outOfRangeTitle'),
+    };
   }
-  return { kind: 'ok', text: '可选' };
+  return { kind: 'ok', text: t('availableTag') };
 }
 
 function unlockChainText(sector) {
   if (!sector.requires || !sector.requires.length) {
-    return sector.unlockKind === 'map' ? '需上一海域末期点位' : '默认解锁';
+    return sector.unlockKind === 'map' ? t('unlockMap') : t('unlockDefault');
   }
   return sector.requires
     .map((id) => {
       const from = sectorById(id);
-      if (from) return `[${from.code}] ${from.name}`;
+      if (from) return `[${from.code}] ${localized(from)}`;
       // AutoRetainer stores 9876 where the unlock condition is not documented yet.
-      return id === 9876 ? '条件未知' : `#${id}`;
+      return id === 9876 ? t('unknownCondition') : `#${id}`;
     })
-    .join('、');
+    .join(', ');
 }
 
 let priceTimer = 0;
@@ -1247,7 +1848,7 @@ function queuePriceFetch() {
         renderSummary();
       }
     } catch (err) {
-      $('#summary-levels').prepend(el('div', 'status blocked', `价格读取失败：${err.message}`));
+      $('#summary-levels').prepend(el('div', 'status blocked', t('priceFailed', { err: err.message })));
     }
   }, 400);
 }
@@ -1267,7 +1868,11 @@ function refreshableIds() {
     const stats = vesselStats(v);
     for (const id of candidateIds([sectors])) ids.add(id);
     for (const id of state.selected) {
-      for (const drop of poolFor(id, surveillanceTier(id, stats.surveillance))) ids.add(drop.id);
+      const weights = poolWeights(id, surveillanceTier(id, stats.surveillance));
+      for (const tier of [0, 1, 2]) {
+        if (!weights[tier]) continue;
+        for (const drop of poolFor(id, tier)) ids.add(drop.id);
+      }
     }
   }
   // Repair materials are a cost, not a drop, but they need a price too.
@@ -1292,6 +1897,27 @@ async function refreshPrices() {
   }
 }
 
+// The badge's wording is language dependent. Re-running the loader would rebuild it, but that also
+// refetches prices, so keep the facts around and redraw just the label.
+function relabelSource() {
+  const badge = $('#source-badge');
+  if (!badge) return;
+  const info = state.sourceInfo || {};
+  if (state.standalone) {
+    badge.textContent = t('staticBadge');
+    badge.title = t('staticBadgeTitle');
+  } else if (info.error) {
+    badge.textContent = info.error || t('readFailed');
+    badge.title = state.source;
+  } else if (info.demo) {
+    badge.textContent = t('demoBadge');
+    badge.title = state.source;
+  } else if (info.vessels !== undefined) {
+    badge.textContent = t('arBadge', { vessels: info.vessels, groups: info.groups });
+    badge.title = state.source;
+  }
+}
+
 function fmtTime(ts) {
   if (!ts) return '';
   const d = new Date(ts);
@@ -1306,7 +1932,7 @@ function renderSectors() {
   const all = state.data.sectors || [];
   if (!v) {
     const tr = el('tr');
-    tr.append(el('td', 'empty', '请先选择潜水艇'));
+    tr.append(el('td', 'empty', t('selectVesselFirst')));
     tbody.append(tr);
     return;
   }
@@ -1331,7 +1957,7 @@ function renderSectors() {
     // Unreachable and over-range sectors stay visible but cannot be ticked. A sector already in
     // the route stays unticked-able even if the simulated level dropped, or it could never be removed.
     cb.disabled = status.kind === 'blocked' || (status.kind === 'locked' && !checked);
-    const hints = [status.title, status.kind === 'locked' && !checked ? `需 Lv.${sector.rank}，无法选择` : ''];
+    const hints = [status.title, status.kind === 'locked' && !checked ? t('lockedCannotPick', { rank: sector.rank }) : ''];
     const hint = hints.filter(Boolean).join('；');
     if (hint) cb.title = hint;
     const toggle = (checked) => {
@@ -1353,26 +1979,44 @@ function renderSectors() {
     tdCheck.append(cb);
     tr.append(tdCheck);
 
-    const nameCell = el('td', null, sector.name);
+    const nameCell = el('td', null, localized(sector));
     const code = el('span', 'sector-code', `[${sector.code}]`);
     nameCell.append(' ', code);
     tr.append(nameCell);
-    tr.append(el('td', null, sector.mapName || '—'));
+    tr.append(el('td', null, mapNameOf(sector.mapId) || '—'));
     tr.append(el('td', null, `Lv.${sector.rank}`));
     tr.append(el('td', null, unlockChainText(sector)));
 
-    tr.append(el('td', null, `${Math.round(surveySeconds(sector, stats.speed) / 60)} 分`));
+    tr.append(el('td', null, t('minutes', { n: Math.round(surveySeconds(sector, stats.speed) / 60) })));
     tr.append(el('td', null, fmt(sector.exp)));
     tr.append(el('td', null, String(sector.ceruleum || 0)));
 
+    // Target mode swaps the gil column for expected units of the wanted items; the gil figure is
+    // still computed for the tooltip so the row keeps both readings.
     const val = sectorValue(sector.id, stats);
-    const gilCell = el('td', null, val.gil > 0 ? fmt(Math.round(val.gil)) : '—');
+    const target = state.mode === 'target' ? targetUnits(sector.id, stats, state.targets) : null;
+    const gilCell = el(
+      'td',
+      null,
+      target
+        ? target.units > 0
+          ? t('targetQtyCell', { n: target.units.toFixed(2) })
+          : '—'
+        : val.gil > 0
+          ? fmt(Math.round(val.gil))
+          : '—'
+    );
     const skipped = [];
-    if (val.cheap) skipped.push(`${val.cheap} 件低于 ${fmt(MIN_UNIT_VALUE)} gil`);
-    if (val.unpriced) skipped.push(`${val.unpriced} 件无报价`);
-    gilCell.title =
-      `探索档位 ${val.tier + 1}/3 · ${val.favored ? '恩惠达标，按两件估算' : '恩惠未达标'} · ` +
-      `计入 ${val.priced}/${val.counted} 件${skipped.length ? `（${skipped.join('、')}）` : ''}`;
+    if (val.cheap) skipped.push(t('skipCheap', { n: val.cheap, v: fmt(MIN_UNIT_VALUE) }));
+    if (val.unpriced) skipped.push(t('skipUnpriced', { n: val.unpriced }));
+    gilCell.title = [
+      target ? t('lootTotal', { v: fmt(Math.round(val.gil)) }) : null,
+      `${t('bandText', { band: bandLabel(val.tier) })}, ${t('poolLanding', { odds: poolOddsText([val])[0] })}`,
+      val.favored ? t('favoredText', { pct: Math.round(val.second * 100) }) : t('notFavoredText'),
+      t('counted', { a: val.priced, b: val.counted }) + (skipped.length ? ` (${skipped.join(', ')})` : ''),
+    ]
+      .filter(Boolean)
+      .join(' · ');
     tr.append(gilCell);
 
     const tdStatus = el('td');
@@ -1385,6 +2029,158 @@ function renderSectors() {
   }
 }
 
+/* ---------- planning mode / target drops ---------- */
+
+const TARGET_SUGGEST_LIMIT = 30;
+
+// drop id -> the sectors it can appear on. The search box asks this for every keystroke, so it is
+// built once per loot table instead of rescanning 143 sectors per candidate.
+function dropSectorIndex() {
+  if (state.dropSectors) return state.dropSectors;
+  const index = new Map();
+  for (const [sectorId, entry] of Object.entries((state.loot && state.loot.sectors) || {})) {
+    const id = Number(sectorId);
+    for (const pool of Object.values(entry.pools || {})) {
+      for (const drop of pool) {
+        if (!index.has(drop.id)) index.set(drop.id, new Set());
+        index.get(drop.id).add(id);
+      }
+    }
+  }
+  state.dropSectors = index;
+  return index;
+}
+
+// Searching all drops means a few hundred names per keystroke, so the haystack is built once.
+function dropMatches(drop, q) {
+  if (!q) return true;
+  return String(drop.hay || '').includes(q);
+}
+
+function addTarget(id) {
+  state.targets.add(Number(id));
+  persist();
+  renderTargets();
+  renderSectors();
+  renderSummary();
+}
+
+function removeTarget(id) {
+  state.targets.delete(Number(id));
+  persist();
+  renderTargets();
+  renderSectors();
+  renderSummary();
+}
+
+// The tag list and the suggestion list both have to follow the current language, so both are
+// rebuilt from scratch rather than patched in place.
+function renderTargets() {
+  const bar = $('#target-bar');
+  if (!bar) return;
+  bar.hidden = state.mode !== 'target';
+  if (bar.hidden) return;
+  renderTargetTags();
+  renderTargetSuggest();
+}
+
+function renderTargetTags() {
+  const host = $('#target-tags');
+  if (!host) return;
+  host.innerHTML = '';
+  const ids = [...state.targets];
+  if (!ids.length) {
+    host.append(el('div', 'vessel-meta', t('targetEmpty')));
+    return;
+  }
+  for (const id of ids) {
+    const drop = targetById(id);
+    const tag = el('span', 'target-tag');
+    tag.append(el('span', null, localized(drop) || `#${id}`));
+    const close = el('button', 'target-del', '×');
+    close.type = 'button';
+    close.title = t('targetRemove');
+    close.addEventListener('click', () => removeTarget(id));
+    tag.append(close);
+    host.append(tag);
+  }
+  host.append(el('span', 'vessel-meta target-count', t('targetCount', { n: ids.length })));
+}
+
+function renderTargetSuggest() {
+  const box = $('#target-suggest');
+  const input = $('#target-search');
+  if (!box || !input) return;
+  const q = String(input.value || '').trim().toLowerCase();
+  if (!q) {
+    box.hidden = true;
+    box.innerHTML = '';
+    return;
+  }
+  const onMap = new Set(
+    (state.data.sectors || [])
+      .filter((s) => String(s.mapId) === state.mapFilter)
+      .map((s) => s.id)
+  );
+  const index = dropSectorIndex();
+  const rows = dropCatalog()
+    .filter((drop) => !state.targets.has(drop.id) && dropMatches(drop, q))
+    .map((drop) => {
+      const sectors = index.get(drop.id) || new Set();
+      let here = 0;
+      for (const id of sectors) if (onMap.has(id)) here += 1;
+      return { drop, here };
+    })
+    .sort((a, b) => b.here - a.here || localized(a.drop).localeCompare(localized(b.drop), LOCALES[state.lang]))
+    .slice(0, TARGET_SUGGEST_LIMIT);
+  box.innerHTML = '';
+  if (!rows.length) {
+    box.append(el('div', 'target-option empty', t('targetNoMatch')));
+    box.hidden = false;
+    return;
+  }
+  for (const { drop, here } of rows) {
+    const row = el('button', 'target-option');
+    row.type = 'button';
+    row.append(el('span', null, localized(drop) || `#${drop.id}`));
+    row.append(
+      el('span', 'vessel-meta', here ? t('targetOnMap', { n: here }) : t('targetNotHere'))
+    );
+    row.addEventListener('click', () => {
+      addTarget(drop.id);
+      input.value = '';
+      renderTargetSuggest();
+      input.focus();
+    });
+    box.append(row);
+  }
+  box.hidden = false;
+}
+
+// A mode switch changes what every row and the summary mean, so repaint both. The table header
+// carries the column meaning too.
+function renderMode() {
+  const select = $('#mode-select');
+  if (select) select.value = state.mode;
+  const th = $('#th-value');
+  if (th) {
+    th.dataset.i18n = state.mode === 'target' ? 'thValueTarget' : 'thValue';
+    th.textContent = t(th.dataset.i18n);
+  }
+  // Leaving target mode drops the stale suggestion panel rather than leaving it floating over the
+  // value table when the mode comes back.
+  if (state.mode !== 'target') {
+    const input = $('#target-search');
+    const box = $('#target-suggest');
+    if (input) input.value = '';
+    if (box) {
+      box.hidden = true;
+      box.innerHTML = '';
+    }
+  }
+  renderTargets();
+}
+
 function renderFilters() {
   const select = $('#map-filter');
   const starts = state.data.starts || [];
@@ -1394,15 +2190,18 @@ function renderFilters() {
     const count = (state.data.sectors || []).filter((s) => s.mapId === st.mapId).length;
     const opt = document.createElement('option');
     opt.value = String(st.mapId);
-    opt.textContent = `${st.mapName}（${count}）`;
+    opt.textContent = `${localized(st)} (${count})`;
     select.append(opt);
   }
   select.value = [...select.options].some((o) => o.value === prev) ? prev : defaultMapFilter();
   state.mapFilter = select.value;
 }
 
-// Open on the active vessel's current map so the table shows where the submarine already is.
+// Open on the sea the route was planned for. A ticked stop is the most direct evidence — the
+// selection is restored on load — and before anything is ticked the vessel's own position decides.
 function defaultMapFilter() {
+  const picked = [...state.selected].map(sectorById).filter(Boolean);
+  if (picked.length) return String(picked[0].mapId);
   const v = activeVessel();
   if (v && v.route && v.route.length) {
     const hit = (state.data.sectors || []).find((s) => s.id === v.route[0].id);
@@ -1410,6 +2209,41 @@ function defaultMapFilter() {
   }
   const first = (state.data.starts || [])[0];
   return first ? String(first.mapId) : '';
+}
+
+function mapNameOf(mapId) {
+  const st = (state.data.starts || []).find((s) => s.mapId === Number(mapId));
+  return st ? localized(st) : '';
+}
+
+// The route only exists on one sea chart, so state which one — the table may be showing another.
+function routeMapName(picked) {
+  const names = [...new Set(picked.map((s) => mapNameOf(s.mapId)).filter(Boolean))];
+  return names.join(' / ');
+}
+
+function targetById(id) {
+  return dropCatalog().find((d) => d.id === Number(id)) || null;
+}
+
+// Expected units of each wanted item per voyage over the whole route, since a target mode route
+// is judged by how much of it comes back, not by what it sells for.
+function targetLine(picked, stats) {
+  const totals = new Map();
+  for (const s of picked) {
+    for (const [id, units] of targetUnits(s.id, stats, state.targets).hits) {
+      totals.set(id, (totals.get(id) || 0) + units);
+    }
+  }
+  if (!totals.size) return el('div', 'vessel-meta', t('targetNone'));
+  const items = [...totals.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .map(([id, units]) => {
+      const drop = targetById(id);
+      return `${localized(drop) || `#${id}`} ×${units.toFixed(2)}`;
+    })
+    .join(' · ');
+  return el('div', 'vessel-meta', t('targetLine', { items }));
 }
 
 function renderSummary() {
@@ -1427,8 +2261,8 @@ function renderSummary() {
   const stats = vesselStats(v);
 
   if (!picked.length) {
-    routeBox.append(el('div', null, '尚未选择航点'));
-    routeBox.append(el('div', 'vessel-meta', `单次航线最多 ${MAX_ROUTE_POINTS} 个点位，勾选后显示航程与收益估算。`));
+    routeBox.append(el('div', null, t('noStops')));
+    routeBox.append(el('div', 'vessel-meta', t('noStopsHint', { n: MAX_ROUTE_POINTS })));
     renderLoot([], stats);
   } else {
     const { seconds, exp, fuel } = routeSummary(picked);
@@ -1438,49 +2272,79 @@ function renderSummary() {
     const fit = cycleFit(seconds, state.cycleHours);
     const distance = minRouteDistance(picked);
 
-    routeBox.append(el('div', null, `已选 ${picked.length} / ${MAX_ROUTE_POINTS} 个点位`));
+    routeBox.append(el('div', null, t('pickedCount', { n: picked.length, max: MAX_ROUTE_POINTS })));
+    // The route belongs to one sea chart; say which, since the table can be showing another one.
+    const chart = routeMapName(picked);
+    if (chart) {
+      const line = el('div', 'vessel-meta sea-chart', t('seaChart', { name: chart }));
+      routeBox.append(line);
+    }
     const l1 = el('div');
-    l1.innerHTML = `预计航程 <b>${fmtDuration(seconds)}</b> · 总经验 <b>${fmt(exp)}</b>`;
+    l1.innerHTML = t('etaLine', { time: fmtDuration(seconds), exp: fmt(exp) });
     routeBox.append(l1);
 
     const l2 = el('div');
     l2.innerHTML =
-      `净收益 <b>${fmt(Math.round(gil))} gil</b> · 青磷水 <b>${fuel}</b>` +
-      (repair.gil > 0 ? `<span class="vessel-meta">（掉落 ${fmt(Math.round(gross))} − 修理 ${fmt(Math.round(repair.gil))}）</span>` : '');
+      t('netLine', { gil: fmt(Math.round(gil)), fuel }) +
+      (repair.gil > 0
+        ? `<span class="vessel-meta">${t('grossNote', {
+            gross: fmt(Math.round(gross)),
+            repair: fmt(Math.round(repair.gil)),
+          })}</span>`
+        : '');
     routeBox.append(l2);
+
+    if (state.mode === 'target') routeBox.append(targetLine(picked, stats));
 
     if (repair.perRepair > 0) {
       routeBox.append(
         el(
           'div',
           'vessel-meta',
-          `修理：每次修理消耗 ${repair.materials} 个魔导修理材料，按当前消耗约 ${repair.voyages} 趟一次，` +
-            `折合每趟 ${repair.perRepair.toFixed(1)} 个` +
-            (repair.unit > 0 ? ` ≈ ${fmt(Math.round(repair.gil))} gil` : '（材料价格未取到）')
+          t('repairLine', {
+            materials: repair.materials,
+            voyages: repair.voyages,
+            per: repair.perRepair.toFixed(1),
+          }) + (repair.unit > 0 ? ` ≈ ${fmt(Math.round(repair.gil))} gil` : ` ${t('repairNoPrice')}`)
         )
       );
     }
 
-    const cycleText = `≈ ${fit.cycle} × ${state.cycleHours}h，比整点早 ${Math.round(fit.diffMinutes)} 分`;
-    routeBox.append(el('div', fit.ok ? 'vessel-meta good-text' : 'vessel-meta', `收放周期：${cycleText}`));
+    routeBox.append(
+      el(
+        'div',
+        fit.ok ? 'vessel-meta good-text' : 'vessel-meta',
+        t('cycleLine', {
+          text: t('cycleText', {
+            cycle: fit.cycle,
+            hours: state.cycleHours,
+            minutes: Math.round(fit.diffMinutes),
+          }),
+        })
+      )
+    );
     routeBox.append(
       el(
         'div',
         distance <= stats.range ? 'vessel-meta good-text' : 'vessel-meta',
-        `航程占用：${distance} / ${stats.range}${distance > stats.range ? '（超出上限，无法出发）' : ''}`
+        t('rangeLine', { d: distance, r: stats.range }) + (distance > stats.range ? t('rangeOver') : '')
       )
     );
 
     const need = (state.maxExp && state.maxExp.get(Number(ov.level))) || ov.expToNext;
     if (need > 0) {
       const pct = ((exp / need) * 100).toFixed(1);
-      routeBox.append(el('div', null, `约占当前等级升级所需经验的 ${pct}%`));
+      routeBox.append(el('div', null, t('expPctLine', { pct })));
     }
-    routeBox.append(el('div', 'vessel-meta', `路线：${picked.map((s) => `[${s.code}]`).join(' → ')}`));
+    routeBox.append(el('div', 'vessel-meta', t('routeLine', { route: picked.map((s) => `[${s.code}]`).join(' → ') })));
     const expPerHour = seconds > 0 ? (exp / (seconds / 3600)) : 0;
     const gilPerHour = seconds > 0 ? gil / (seconds / 3600) : 0;
     routeBox.append(
-      el('div', 'vessel-meta', `效率：${fmt(Math.round(expPerHour))} 经验/小时 · ${fmt(Math.round(gilPerHour))} gil/小时`)
+      el(
+        'div',
+        'vessel-meta',
+        t('effLine', { exp: fmt(Math.round(expPerHour)), gil: fmt(Math.round(gilPerHour)) })
+      )
     );
     renderLoot(picked, stats, { gross, repair });
   }
@@ -1489,13 +2353,13 @@ function renderSummary() {
     .filter((s) => s.rank > ov.level)
     .sort((a, b) => a.rank - b.rank)[0];
   if (nextLocked) {
-    levelBox.append(el('div', null, `下一个可解锁航点：${nextLocked.name}`));
-    levelBox.append(el('div', 'vessel-meta', `需要 Lv.${nextLocked.rank}（当前 Lv.${ov.level}）`));
+    levelBox.append(el('div', null, t('nextUnlock', { name: localized(nextLocked) })));
+    levelBox.append(el('div', 'vessel-meta', t('needLevelFor', { rank: nextLocked.rank, level: ov.level })));
   } else {
-    levelBox.append(el('div', null, '当前等级已满足全部航点的等级要求'));
+    levelBox.append(el('div', null, t('allUnlocked')));
   }
   const locked = sectors.filter((s) => s.rank > ov.level).length;
-  levelBox.append(el('div', 'vessel-meta', `仍有 ${locked} 个航点等级不足`));
+  levelBox.append(el('div', 'vessel-meta', t('stillLocked', { n: locked })));
 }
 
 function renderAll() {
@@ -1504,6 +2368,7 @@ function renderAll() {
   renderParts();
   renderStats();
   renderLevel();
+  renderMode();
   renderSectors();
   renderSummary();
   queuePriceFetch();
@@ -1515,26 +2380,42 @@ function renderAll() {
 async function generateRoute() {
   const v = activeVessel();
   if (!v) return;
+  // Ranking by expected units needs to know which units count, so there is nothing to search for
+  // until at least one target exists.
+  if (state.mode === 'target') {
+    if (!state.targets.size) {
+      $('#summary-levels').prepend(el('div', 'status blocked', t('targetNeeded')));
+      return;
+    }
+    const stats = vesselStats(v);
+    const reachable = candidateMaps(v)
+      .flat()
+      .filter((s) => targetUnits(s.id, stats, state.targets).units > 0);
+    if (!reachable.length) {
+      $('#summary-levels').prepend(el('div', 'status blocked', t('targetMissing')));
+      return;
+    }
+  }
   state.cycleHours = Number($('#duration-target').value) || CYCLE_HOURS;
 
   const btn = $('#add-route-btn');
   btn.disabled = true;
-  btn.textContent = '计算中…';
+  btn.textContent = t('btnGenerating');
   try {
     const ids = candidateIds(candidateMaps(v));
     if (ids.length) {
       try {
         await ensurePrices(ids);
       } catch (err) {
-        $('#summary-levels').prepend(el('div', 'status blocked', `价格读取失败：${err.message}`));
+        $('#summary-levels').prepend(el('div', 'status blocked', t('priceFailed', { err: err.message })));
       }
     }
 
     const { best, farthest, stats } = searchRoute();
     if (!best) {
       const why = farthest
-        ? `没有航程在航程上限 ${stats.range} 内的航点组合（最近的也要 ${farthest.distance}）。`
-        : '没有找到可用航点';
+        ? t('noRouteRange', { r: stats.range, d: farthest.distance })
+        : t('noRoute');
       $('#summary-levels').prepend(el('div', 'status blocked', why));
       return;
     }
@@ -1544,22 +2425,22 @@ async function generateRoute() {
     renderSectors();
     renderSummary();
 
-    const mapName = (state.data.starts || []).find((s) => s.mapId === best.mapId)?.mapName;
+    const mapName = mapNameOf(best.mapId);
     if (mapName) {
-      $('#summary-levels').prepend(el('div', 'vessel-meta', `自动规划海域：${mapName}`));
+      $('#summary-levels').prepend(el('div', 'vessel-meta', t('autoMap', { name: mapName })));
     }
     if (best.fit && !best.fit.ok) {
       $('#summary-levels').prepend(
-        el(
-          'div',
-          'vessel-meta',
-          `在可选航点内无法贴合 ${state.cycleHours}h 周期，最接近的是 ${fmtDuration(best.seconds)}（比整点早 ${Math.round(best.fit.diffMinutes)} 分）。`
-        )
+        el('div', 'vessel-meta', t('cycleMiss', {
+          h: state.cycleHours,
+          time: fmtDuration(best.seconds),
+          m: Math.round(best.fit.diffMinutes),
+        }))
       );
     }
   } finally {
     btn.disabled = false;
-    btn.textContent = '生成路线';
+    btn.textContent = t('btnGenerate');
   }
 }
 
@@ -1588,10 +2469,11 @@ async function loadVessels() {
     // Keep any manual rows the user added locally; only the demo row is synthetic.
     state.slots = [STANDALONE_VESSEL, ...state.slots.filter((s) => s.manual)];
     if (!state.world) state.world = STANDALONE_VESSEL.world;
-    state.source = '静态托管 · 未连接本地服务';
+    state.source = t('staticSource');
+    state.sourceInfo = { static: true };
     badge.className = 'badge';
-    badge.textContent = '静态模式 · 示例潜艇，可手动改配置';
-    badge.title = 'GitHub Pages 等静态托管读不到本机的 AutoRetainer 配置；价格直接向 Universalis 查询。';
+    badge.textContent = t('staticBadge');
+    badge.title = t('staticBadgeTitle');
     if (state.activeSlot >= state.slots.length) state.activeSlot = 0;
     return;
   }
@@ -1600,7 +2482,8 @@ async function loadVessels() {
     const body = await res.json();
     if (!body.ok) {
       badge.className = 'badge err';
-      badge.textContent = body.error || '读取失败';
+      state.sourceInfo = { error: body.error || '' };
+      badge.textContent = body.error || t('readFailed');
       badge.title = (body.searched || []).join('\n');
       return;
     }
@@ -1616,15 +2499,16 @@ async function loadVessels() {
     state.slots = [...fetched, ...kept];
     state.source = body.source || '';
     const groups = mergeSlots(visibleSlots()).length;
+    state.sourceInfo = { demo: body.demo, vessels: vessels.length, groups };
     badge.className = body.demo ? 'badge' : 'badge ok';
     badge.textContent = body.demo
-      ? '示例数据 · 未找到 AutoRetainer'
-      : `AutoRetainer · ${vessels.length} 艘 / ${groups} 种配置`;
+      ? t('demoBadge')
+      : t('arBadge', { vessels: vessels.length, groups });
     badge.title = state.source;
     if (state.activeSlot >= state.slots.length) state.activeSlot = 0;
   } catch (err) {
     badge.className = 'badge err';
-    badge.textContent = '无法连接本地服务';
+    badge.textContent = t('cannotConnect');
     badge.title = String(err);
   }
 }
@@ -1639,6 +2523,8 @@ async function loadData() {
   } catch (_) {
     state.loot = { sectors: {} };
   }
+  state.dropCatalog = null;
+  state.dropSectors = null;
 }
 
 function importJson(text) {
@@ -1646,21 +2532,21 @@ function importJson(text) {
   try {
     parsed = JSON.parse(text);
   } catch (err) {
-    alert('JSON 解析失败：' + err.message);
+    alert(t('jsonParseFailed', { err: err.message }));
     return;
   }
   if (parsed.parts || parsed.sectors) {
     state.data = { ...state.data, ...parsed };
     buildPartsIndex();
     renderAll();
-    alert('数据已导入');
+    alert(t('dataImported'));
     return;
   }
   if (Array.isArray(parsed.OfflineData)) {
-    alert('这是 AutoRetainer 原始配置，请放到插件配置目录后点“重新读取”。');
+    alert(t('autoretainerRaw'));
     return;
   }
-  alert('无法识别的数据格式：需要包含 parts / sectors 字段');
+  alert(t('unknownFormat'));
 }
 
 function exportJson() {
@@ -1703,9 +2589,54 @@ async function detectStandalone() {
   }
 }
 
+// Static markup carries its Chinese text inline so the page reads correctly before the script
+// runs; swapping in the other languages only needs to walk the tags with a data-i18n key.
+function applyStaticText() {
+  document.documentElement.lang = LANG_TAGS[state.lang] || LANG_TAGS.zh;
+  document.title = t('appTitle');
+  for (const node of document.querySelectorAll('[data-i18n]')) {
+    node.textContent = t(node.dataset.i18n);
+  }
+  for (const node of document.querySelectorAll('[data-i18n-placeholder]')) {
+    node.placeholder = t(node.dataset.i18nPlaceholder);
+  }
+}
+
+function renderLangSelect() {
+  const select = $('#lang-select');
+  if (!select) return;
+  select.innerHTML = '';
+  for (const lang of LANGS) {
+    const opt = document.createElement('option');
+    opt.value = lang;
+    opt.textContent = LANG_NAMES[lang];
+    select.append(opt);
+  }
+  select.value = state.lang;
+  select.addEventListener('change', () => {
+    state.lang = select.value;
+    // Part and item names are cached in the index at load time, so rebuild before repainting.
+    buildPartsIndex();
+    persist();
+    applyStaticText();
+    // The sea list and the per-row sea cells carry localised names; the selection itself does not
+    // change, so remember it across the rebuild.
+    const keepMap = state.mapFilter;
+    renderFilters();
+    if ([...$('#map-filter').options].some((o) => o.value === keepMap)) {
+      $('#map-filter').value = keepMap;
+      state.mapFilter = keepMap;
+    }
+    renderAll();
+    relabelSource();
+  });
+}
+
 async function boot() {
   loadStored();
   state.standalone = await detectStandalone();
+  applyStaticText();
+  renderLangSelect();
   await loadData();
   await loadVessels();
 
@@ -1729,8 +2660,25 @@ async function boot() {
     persist();
     renderSectors();
     renderSummary();
+    // The suggestion list labels each item with how many stops on this map carry it.
+    renderTargets();
     // The new map's drops have probably never been priced; only uncached ids are requested.
     queuePriceFetch();
+  });
+  $('#mode-select').addEventListener('change', (e) => {
+    state.mode = e.target.value === 'target' ? 'target' : 'value';
+    persist();
+    renderMode();
+    renderSectors();
+    renderSummary();
+  });
+  $('#target-search').addEventListener('input', renderTargetSuggest);
+  // The suggestion list floats over the table; a click anywhere else closes it.
+  document.addEventListener('click', (e) => {
+    const box = $('#target-suggest');
+    if (!box || box.hidden) return;
+    if (box.contains(e.target) || e.target === $('#target-search')) return;
+    box.hidden = true;
   });
   $('#duration-target').addEventListener('change', (e) => {
     state.cycleHours = Number(e.target.value) || CYCLE_HOURS;

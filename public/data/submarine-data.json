@@ -25,7 +25,12 @@
         "favor": 20,
         "rank": 1,
         "components": 5,
-        "repairMaterials": 1
+        "repairMaterials": 1,
+        "names": {
+          "zh": "鲨鱼级船体",
+          "ja": "シャーク級艦体",
+          "en": "Shark-class Pressure Hull"
+        }
       },
       {
         "partId": 7,
@@ -41,7 +46,12 @@
         "favor": 15,
         "rank": 15,
         "components": 9,
-        "repairMaterials": 2
+        "repairMaterials": 2,
+        "names": {
+          "zh": "甲鲎级船体",
+          "ja": "ウンキウ級艦体",
+          "en": "Unkiu-class Pressure Hull"
+        }
       },
       {
         "partId": 11,
@@ -57,7 +67,12 @@
         "favor": 20,
         "rank": 25,
         "components": 12,
-        "repairMaterials": 3
+        "repairMaterials": 3,
+        "names": {
+          "zh": "须鲸级船体",
+          "ja": "ホエール級艦体",
+          "en": "Whale-class Pressure Hull"
+        }
       },
       {
         "partId": 15,
@@ -73,7 +88,12 @@
         "favor": 25,
         "rank": 35,
         "components": 14,
-        "repairMaterials": 4
+        "repairMaterials": 4,
+        "names": {
+          "zh": "腔棘鱼级船体",
+          "ja": "シーラカンス級艦体",
+          "en": "Coelacanth-class Pressure Hull"
+        }
       },
       {
         "partId": 19,
@@ -89,7 +109,12 @@
         "favor": 5,
         "rank": 45,
         "components": 17,
-        "repairMaterials": 5
+        "repairMaterials": 5,
+        "names": {
+          "zh": "希尔德拉级船体",
+          "ja": "シルドラ級艦体",
+          "en": "Syldra-class Pressure Hull"
+        }
       },
       {
         "partId": 23,
@@ -105,7 +130,12 @@
         "favor": 35,
         "rank": 50,
         "components": 20,
-        "repairMaterials": 6
+        "repairMaterials": 6,
+        "names": {
+          "zh": "鲨鱼改级船体",
+          "ja": "シャーク改級艦体",
+          "en": "Modified Shark-class Pressure Hull"
+        }
       },
       {
         "partId": 27,
@@ -121,7 +151,12 @@
         "favor": 25,
         "rank": 50,
         "components": 20,
-        "repairMaterials": 6
+        "repairMaterials": 6,
+        "names": {
+          "zh": "甲鲎改级船体",
+          "ja": "ウンキウ改級艦体",
+          "en": "Modified Unkiu-class Pressure Hull"
+        }
       },
       {
         "partId": 31,
@@ -137,7 +172,12 @@
         "favor": 30,
         "rank": 50,
         "components": 20,
-        "repairMaterials": 6
+        "repairMaterials": 6,
+        "names": {
+          "zh": "须鲸改级船体",
+          "ja": "ホエール改級艦体",
+          "en": "Modified Whale-class Pressure Hull"
+        }
       },
       {
         "partId": 35,
@@ -153,7 +193,12 @@
         "favor": 30,
         "rank": 50,
         "components": 20,
-        "repairMaterials": 6
+        "repairMaterials": 6,
+        "names": {
+          "zh": "腔棘鱼改级船体",
+          "ja": "シーラカンス改級艦体",
+          "en": "Modified Coelacanth-class Pressure Hull"
+        }
       },
       {
         "partId": 39,
@@ -169,7 +214,12 @@
         "favor": 10,
         "rank": 50,
         "components": 20,
-        "repairMaterials": 6
+        "repairMaterials": 6,
+        "names": {
+          "zh": "希尔德拉改级船体",
+          "ja": "シルドラ改級艦体",
+          "en": "Modified Syldra-class Pressure Hull"
+        }
       }
     ],
     "stern": [
@@ -187,7 +237,12 @@
         "favor": 15,
         "rank": 1,
         "components": 5,
-        "repairMaterials": 1
+        "repairMaterials": 1,
+        "names": {
+          "zh": "鲨鱼级船尾",
+          "ja": "シャーク級艦尾",
+          "en": "Shark-class Stern"
+        }
       },
       {
         "partId": 8,
@@ -203,7 +258,12 @@
         "favor": 25,
         "rank": 15,
         "components": 9,
-        "repairMaterials": 2
+        "repairMaterials": 2,
+        "names": {
+          "zh": "甲鲎级船尾",
+          "ja": "ウンキウ級艦尾",
+          "en": "Unkiu-class Stern"
+        }
       },
       {
         "partId": 12,
@@ -219,7 +279,12 @@
         "favor": 15,
         "rank": 25,
         "components": 12,
-        "repairMaterials": 3
+        "repairMaterials": 3,
+        "names": {
+          "zh": "须鲸级船尾",
+          "ja": "ホエール級艦尾",
+          "en": "Whale-class Stern"
+        }
       },
       {
         "partId": 16,
@@ -235,7 +300,12 @@
         "favor": 25,
         "rank": 35,
         "components": 14,
-        "repairMaterials": 4
+        "repairMaterials": 4,
+        "names": {
+          "zh": "腔棘鱼级船尾",
+          "ja": "シーラカンス級艦尾",
+          "en": "Coelacanth-class Stern"
+        }
       },
       {
         "partId": 20,
@@ -251,7 +321,12 @@
         "favor": 5,
         "rank": 45,
         "components": 17,
-        "repairMaterials": 5
+        "repairMaterials": 5,
+        "names": {
+          "zh": "希尔德拉级船尾",
+          "ja": "シルドラ級艦尾",
+          "en": "Syldra-class Stern"
+        }
       },
       {
         "partId": 24,
@@ -267,7 +342,12 @@
         "favor": 25,
         "rank": 50,
         "components": 20,
-        "repairMaterials": 6
+        "repairMaterials": 6,
+        "names": {
+          "zh": "鲨鱼改级船尾",
+          "ja": "シャーク改級艦尾",
+          "en": "Modified Shark-class Stern"
+        }
       },
       {
         "partId": 28,
@@ -283,7 +363,12 @@
         "favor": 35,
         "rank": 50,
         "components": 20,
-        "repairMaterials": 6
+        "repairMaterials": 6,
+        "names": {
+          "zh": "甲鲎改级船尾",
+          "ja": "ウンキウ改級艦尾",
+          "en": "Modified Unkiu-class Stern"
+        }
       },
       {
         "partId": 32,
@@ -299,7 +384,12 @@
         "favor": 20,
         "rank": 50,
         "components": 20,
-        "repairMaterials": 6
+        "repairMaterials": 6,
+        "names": {
+          "zh": "须鲸改级船尾",
+          "ja": "ホエール改級艦尾",
+          "en": "Modified Whale-class Stern"
+        }
       },
       {
         "partId": 36,
@@ -315,7 +405,12 @@
         "favor": 30,
         "rank": 50,
         "components": 20,
-        "repairMaterials": 6
+        "repairMaterials": 6,
+        "names": {
+          "zh": "腔棘鱼改级船尾",
+          "ja": "シーラカンス改級艦尾",
+          "en": "Modified Coelacanth-class Stern"
+        }
       },
       {
         "partId": 40,
@@ -331,7 +426,12 @@
         "favor": 10,
         "rank": 50,
         "components": 20,
-        "repairMaterials": 6
+        "repairMaterials": 6,
+        "names": {
+          "zh": "希尔德拉改级船尾",
+          "ja": "シルドラ改級艦尾",
+          "en": "Modified Syldra-class Stern"
+        }
       }
     ],
     "bow": [
@@ -349,7 +449,12 @@
         "favor": 15,
         "rank": 1,
         "components": 5,
-        "repairMaterials": 1
+        "repairMaterials": 1,
+        "names": {
+          "zh": "鲨鱼级船首",
+          "ja": "シャーク級艦首",
+          "en": "Shark-class Bow"
+        }
       },
       {
         "partId": 5,
@@ -365,7 +470,12 @@
         "favor": 10,
         "rank": 15,
         "components": 9,
-        "repairMaterials": 2
+        "repairMaterials": 2,
+        "names": {
+          "zh": "甲鲎级船首",
+          "ja": "ウンキウ級艦首",
+          "en": "Unkiu-class Bow"
+        }
       },
       {
         "partId": 9,
@@ -381,7 +491,12 @@
         "favor": 15,
         "rank": 25,
         "components": 12,
-        "repairMaterials": 3
+        "repairMaterials": 3,
+        "names": {
+          "zh": "须鲸级船首",
+          "ja": "ホエール級艦首",
+          "en": "Whale-class Bow"
+        }
       },
       {
         "partId": 13,
@@ -397,7 +512,12 @@
         "favor": 0,
         "rank": 35,
         "components": 14,
-        "repairMaterials": 4
+        "repairMaterials": 4,
+        "names": {
+          "zh": "腔棘鱼级船首",
+          "ja": "シーラカンス級艦首",
+          "en": "Coelacanth-class Bow"
+        }
       },
       {
         "partId": 17,
@@ -413,7 +533,12 @@
         "favor": 40,
         "rank": 45,
         "components": 17,
-        "repairMaterials": 5
+        "repairMaterials": 5,
+        "names": {
+          "zh": "希尔德拉级船首",
+          "ja": "シルドラ級艦首",
+          "en": "Syldra-class Bow"
+        }
       },
       {
         "partId": 21,
@@ -429,7 +554,12 @@
         "favor": 25,
         "rank": 50,
         "components": 20,
-        "repairMaterials": 6
+        "repairMaterials": 6,
+        "names": {
+          "zh": "鲨鱼改级船首",
+          "ja": "シャーク改級艦首",
+          "en": "Modified Shark-class Bow"
+        }
       },
       {
         "partId": 25,
@@ -445,7 +575,12 @@
         "favor": 20,
         "rank": 50,
         "components": 20,
-        "repairMaterials": 6
+        "repairMaterials": 6,
+        "names": {
+          "zh": "甲鲎改级船首",
+          "ja": "ウンキウ改級艦首",
+          "en": "Modified Unkiu-class Bow"
+        }
       },
       {
         "partId": 29,
@@ -461,7 +596,12 @@
         "favor": 25,
         "rank": 50,
         "components": 20,
-        "repairMaterials": 6
+        "repairMaterials": 6,
+        "names": {
+          "zh": "须鲸改级船首",
+          "ja": "ホエール改級艦首",
+          "en": "Modified Whale-class Bow"
+        }
       },
       {
         "partId": 33,
@@ -477,7 +617,12 @@
         "favor": 5,
         "rank": 50,
         "components": 20,
-        "repairMaterials": 6
+        "repairMaterials": 6,
+        "names": {
+          "zh": "腔棘鱼改级船首",
+          "ja": "シーラカンス改級艦首",
+          "en": "Modified Coelacanth-class Bow"
+        }
       },
       {
         "partId": 37,
@@ -493,7 +638,12 @@
         "favor": 40,
         "rank": 50,
         "components": 20,
-        "repairMaterials": 6
+        "repairMaterials": 6,
+        "names": {
+          "zh": "希尔德拉改级船首",
+          "ja": "シルドラ改級艦首",
+          "en": "Modified Syldra-class Bow"
+        }
       }
     ],
     "bridge": [
@@ -511,7 +661,12 @@
         "favor": 20,
         "rank": 1,
         "components": 5,
-        "repairMaterials": 1
+        "repairMaterials": 1,
+        "names": {
+          "zh": "鲨鱼级舰桥",
+          "ja": "シャーク級艦橋",
+          "en": "Shark-class Bridge"
+        }
       },
       {
         "partId": 6,
@@ -527,7 +682,12 @@
         "favor": 30,
         "rank": 15,
         "components": 9,
-        "repairMaterials": 2
+        "repairMaterials": 2,
+        "names": {
+          "zh": "甲鲎级舰桥",
+          "ja": "ウンキウ級艦橋",
+          "en": "Unkiu-class Bridge"
+        }
       },
       {
         "partId": 10,
@@ -543,7 +703,12 @@
         "favor": 40,
         "rank": 25,
         "components": 12,
-        "repairMaterials": 3
+        "repairMaterials": 3,
+        "names": {
+          "zh": "须鲸级舰桥",
+          "ja": "ホエール級艦橋",
+          "en": "Whale-class Bridge"
+        }
       },
       {
         "partId": 14,
@@ -559,7 +724,12 @@
         "favor": 50,
         "rank": 35,
         "components": 14,
-        "repairMaterials": 4
+        "repairMaterials": 4,
+        "names": {
+          "zh": "腔棘鱼级舰桥",
+          "ja": "シーラカンス級艦橋",
+          "en": "Coelacanth-class Bridge"
+        }
       },
       {
         "partId": 18,
@@ -575,7 +745,12 @@
         "favor": 60,
         "rank": 45,
         "components": 17,
-        "repairMaterials": 5
+        "repairMaterials": 5,
+        "names": {
+          "zh": "希尔德拉级舰桥",
+          "ja": "シルドラ級艦橋",
+          "en": "Syldra-class Bridge"
+        }
       },
       {
         "partId": 22,
@@ -591,7 +766,12 @@
         "favor": 35,
         "rank": 50,
         "components": 20,
-        "repairMaterials": 6
+        "repairMaterials": 6,
+        "names": {
+          "zh": "鲨鱼改级舰桥",
+          "ja": "シャーク改級艦橋",
+          "en": "Modified Shark-class Bridge"
+        }
       },
       {
         "partId": 26,
@@ -607,7 +787,12 @@
         "favor": 40,
         "rank": 50,
         "components": 20,
-        "repairMaterials": 6
+        "repairMaterials": 6,
+        "names": {
+          "zh": "甲鲎改级舰桥",
+          "ja": "ウンキウ改級艦橋",
+          "en": "Modified Unkiu-class Bridge"
+        }
       },
       {
         "partId": 30,
@@ -623,7 +808,12 @@
         "favor": 45,
         "rank": 50,
         "components": 20,
-        "repairMaterials": 6
+        "repairMaterials": 6,
+        "names": {
+          "zh": "须鲸改级舰桥",
+          "ja": "ホエール改級艦橋",
+          "en": "Modified Whale-class Bridge"
+        }
       },
       {
         "partId": 34,
@@ -639,7 +829,12 @@
         "favor": 55,
         "rank": 50,
         "components": 20,
-        "repairMaterials": 6
+        "repairMaterials": 6,
+        "names": {
+          "zh": "腔棘鱼改级舰桥",
+          "ja": "シーラカンス改級艦橋",
+          "en": "Modified Coelacanth-class Bridge"
+        }
       },
       {
         "partId": 38,
@@ -655,7 +850,12 @@
         "favor": 60,
         "rank": 50,
         "components": 20,
-        "repairMaterials": 6
+        "repairMaterials": 6,
+        "names": {
+          "zh": "希尔德拉改级舰桥",
+          "ja": "シルドラ改級艦橋",
+          "en": "Modified Syldra-class Bridge"
+        }
       }
     ]
   },
@@ -665,49 +865,84 @@
       "mapName": "溺没海",
       "x": 483,
       "y": 927,
-      "z": 0
+      "z": 0,
+      "names": {
+        "zh": "溺没海",
+        "ja": "溺没海",
+        "en": "Deep-sea Site"
+      }
     },
     {
       "mapId": 2,
       "mapName": "灰海",
       "x": 483,
       "y": 927,
-      "z": 0
+      "z": 0,
+      "names": {
+        "zh": "灰海",
+        "ja": "灰海",
+        "en": "Sea of Ash"
+      }
     },
     {
       "mapId": 3,
       "mapName": "翠浪海",
       "x": 64,
       "y": 591,
-      "z": 0
+      "z": 0,
+      "names": {
+        "zh": "翠浪海",
+        "ja": "翠浪海",
+        "en": "Sea of Jade"
+      }
     },
     {
       "mapId": 4,
       "mapName": "妖歌海",
       "x": 177,
       "y": 927,
-      "z": 0
+      "z": 0,
+      "names": {
+        "zh": "妖歌海",
+        "ja": "セイレーン海",
+        "en": "Sirensong Sea"
+      }
     },
     {
       "mapId": 5,
       "mapName": "紫礁海",
       "x": 49,
       "y": 928,
-      "z": 0
+      "z": 0,
+      "names": {
+        "zh": "紫礁海",
+        "ja": "紫礁海",
+        "en": "Lilac Sea"
+      }
     },
     {
       "mapId": 6,
       "mapName": "南苍茫洋",
       "x": 934,
       "y": 60,
-      "z": 0
+      "z": 0,
+      "names": {
+        "zh": "南苍茫洋",
+        "ja": "南蒼茫洋",
+        "en": "South Indigo Deep"
+      }
     },
     {
       "mapId": 7,
       "mapName": "北洋",
       "x": 933,
       "y": 940,
-      "z": 0
+      "z": 0,
+      "names": {
+        "zh": "北洋",
+        "ja": "北洋",
+        "en": "The Northern Empty"
+      }
     }
   ],
   "sectors": [
@@ -731,7 +966,12 @@
       "unlockKind": "default",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "洁白浅滩"
+      "nameZh": "洁白浅滩",
+      "names": {
+        "zh": "洁白浅滩",
+        "ja": "白の浅瀬",
+        "en": "the Ivory Shoals"
+      }
     },
     {
       "id": 2,
@@ -753,7 +993,12 @@
       "unlockKind": "default",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "溺没海1"
+      "nameZh": "溺没海1",
+      "names": {
+        "zh": "溺没海1",
+        "ja": "溺没海01",
+        "en": "deep-sea site 1"
+      }
     },
     {
       "id": 3,
@@ -777,7 +1022,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "溺没海2"
+      "nameZh": "溺没海2",
+      "names": {
+        "zh": "溺没海2",
+        "ja": "溺没海02",
+        "en": "deep-sea site 2"
+      }
     },
     {
       "id": 4,
@@ -801,7 +1051,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "无光海盆"
+      "nameZh": "无光海盆",
+      "names": {
+        "zh": "无光海盆",
+        "ja": "黒の海盆",
+        "en": "the Lightless Basin"
+      }
     },
     {
       "id": 5,
@@ -825,7 +1080,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "溺没海3"
+      "nameZh": "溺没海3",
+      "names": {
+        "zh": "溺没海3",
+        "ja": "溺没海03",
+        "en": "deep-sea site 3"
+      }
     },
     {
       "id": 6,
@@ -849,7 +1109,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "利米拉拉海沟南端"
+      "nameZh": "利米拉拉海沟南端",
+      "names": {
+        "zh": "利米拉拉海沟南端",
+        "ja": "リミララ海溝南端",
+        "en": "the Southern Rimilala Trench"
+      }
     },
     {
       "id": 7,
@@ -873,7 +1138,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "伞峡"
+      "nameZh": "伞峡",
+      "names": {
+        "zh": "伞峡",
+        "ja": "アンブレラ海峡",
+        "en": "the Umbrella Narrow"
+      }
     },
     {
       "id": 8,
@@ -897,7 +1167,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "俘虏岛"
+      "nameZh": "俘虏岛",
+      "names": {
+        "zh": "俘虏岛",
+        "ja": "虜囚島",
+        "en": "Offender's Rot"
+      }
     },
     {
       "id": 9,
@@ -921,7 +1196,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "石人岛"
+      "nameZh": "石人岛",
+      "names": {
+        "zh": "石人岛",
+        "ja": "石人島",
+        "en": "Neolith Island"
+      }
     },
     {
       "id": 10,
@@ -945,7 +1225,12 @@
       "unlockKind": "point",
       "needsSub": true,
       "opensMap": false,
-      "nameZh": "无名沉船"
+      "nameZh": "无名沉船",
+      "names": {
+        "zh": "无名沉船",
+        "ja": "名も無き沈没船",
+        "en": "unidentified derelict"
+      }
     },
     {
       "id": 11,
@@ -969,7 +1254,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "湛蓝浅滩"
+      "nameZh": "湛蓝浅滩",
+      "names": {
+        "zh": "湛蓝浅滩",
+        "ja": "藍の浅瀬",
+        "en": "the Cobalt Shoals"
+      }
     },
     {
       "id": 12,
@@ -993,7 +1283,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "神秘海盆"
+      "nameZh": "神秘海盆",
+      "names": {
+        "zh": "神秘海盆",
+        "ja": "神秘の海盆",
+        "en": "the Mystic Basin"
+      }
     },
     {
       "id": 13,
@@ -1017,7 +1312,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "溺没海4"
+      "nameZh": "溺没海4",
+      "names": {
+        "zh": "溺没海4",
+        "ja": "溺没海04",
+        "en": "deep-sea site 4"
+      }
     },
     {
       "id": 14,
@@ -1041,7 +1341,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "利米拉拉海沟中部"
+      "nameZh": "利米拉拉海沟中部",
+      "names": {
+        "zh": "利米拉拉海沟中部",
+        "ja": "リミララ海溝中腹",
+        "en": "the Central Rimilala Trench"
+      }
     },
     {
       "id": 15,
@@ -1065,7 +1370,12 @@
       "unlockKind": "point",
       "needsSub": true,
       "opensMap": false,
-      "nameZh": "探索号残骸"
+      "nameZh": "探索号残骸",
+      "names": {
+        "zh": "探索号残骸",
+        "ja": "ディスカバリー号の残骸",
+        "en": "the Wreckage of Discovery I"
+      }
     },
     {
       "id": 16,
@@ -1089,7 +1399,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "树丛岛"
+      "nameZh": "树丛岛",
+      "names": {
+        "zh": "树丛岛",
+        "ja": "木叢島",
+        "en": "Komura"
+      }
     },
     {
       "id": 17,
@@ -1113,7 +1428,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "金山岛"
+      "nameZh": "金山岛",
+      "names": {
+        "zh": "金山岛",
+        "ja": "金山島",
+        "en": "Kanayama"
+      }
     },
     {
       "id": 18,
@@ -1137,7 +1457,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "海军的秘密港口"
+      "nameZh": "海军的秘密港口",
+      "names": {
+        "zh": "海军的秘密港口",
+        "ja": "水師の隠し港",
+        "en": "concealed bay"
+      }
     },
     {
       "id": 19,
@@ -1161,7 +1486,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "溺没海5"
+      "nameZh": "溺没海5",
+      "names": {
+        "zh": "溺没海5",
+        "ja": "溺没海05",
+        "en": "deep-sea site 5"
+      }
     },
     {
       "id": 20,
@@ -1185,7 +1515,12 @@
       "unlockKind": "point",
       "needsSub": true,
       "opensMap": false,
-      "nameZh": "炼狱岛"
+      "nameZh": "炼狱岛",
+      "names": {
+        "zh": "炼狱岛",
+        "ja": "煉獄島",
+        "en": "Purgatory"
+      }
     },
     {
       "id": 21,
@@ -1209,7 +1544,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "溺没海6"
+      "nameZh": "溺没海6",
+      "names": {
+        "zh": "溺没海6",
+        "ja": "溺没海06",
+        "en": "deep-sea site 6"
+      }
     },
     {
       "id": 22,
@@ -1233,7 +1573,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "利米拉拉海沟大倾斜"
+      "nameZh": "利米拉拉海沟大倾斜",
+      "names": {
+        "zh": "利米拉拉海沟大倾斜",
+        "ja": "リミララ海溝大傾斜",
+        "en": "the Rimilala Shelf"
+      }
     },
     {
       "id": 23,
@@ -1257,7 +1602,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "溺没海7"
+      "nameZh": "溺没海7",
+      "names": {
+        "zh": "溺没海7",
+        "ja": "溺没海07",
+        "en": "deep-sea site 7"
+      }
     },
     {
       "id": 24,
@@ -1281,7 +1631,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "辉砂海盆"
+      "nameZh": "辉砂海盆",
+      "names": {
+        "zh": "辉砂海盆",
+        "ja": "輝砂の海盆",
+        "en": "Glittersand Basin"
+      }
     },
     {
       "id": 25,
@@ -1305,7 +1660,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "残照白谷"
+      "nameZh": "残照白谷",
+      "names": {
+        "zh": "残照白谷",
+        "ja": "残照の白谷",
+        "en": "Flickering Dip"
+      }
     },
     {
       "id": 26,
@@ -1329,7 +1689,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "前进号的残骸"
+      "nameZh": "前进号的残骸",
+      "names": {
+        "zh": "前进号的残骸",
+        "ja": "ヘッドウェイ号の残骸",
+        "en": "the Wreckage of the Headway"
+      }
     },
     {
       "id": 27,
@@ -1353,7 +1718,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "变理海域"
+      "nameZh": "变理海域",
+      "names": {
+        "zh": "变理海域",
+        "ja": "AA　変理の海域",
+        "en": "the Upwell (AA)"
+      }
     },
     {
       "id": 28,
@@ -1377,7 +1747,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "利米拉拉海沟最深部"
+      "nameZh": "利米拉拉海沟最深部",
+      "names": {
+        "zh": "利米拉拉海沟最深部",
+        "ja": "AB　リミララ海溝最深部",
+        "en": "the Rimilala Trench Bottom (AB)"
+      }
     },
     {
       "id": 29,
@@ -1401,7 +1776,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "石造寺院遗迹"
+      "nameZh": "石造寺院遗迹",
+      "names": {
+        "zh": "石造寺院遗迹",
+        "ja": "AC　石造寺院跡",
+        "en": "stone temple (AC)"
+      }
     },
     {
       "id": 30,
@@ -1425,7 +1805,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": true,
-      "nameZh": "古代宝物库"
+      "nameZh": "古代宝物库",
+      "names": {
+        "zh": "古代宝物库",
+        "ja": "AD　古の宝物庫",
+        "en": "sunken vault (AD)"
+      }
     },
     {
       "id": 32,
@@ -1449,7 +1834,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "佐佐纳恩岛南端"
+      "nameZh": "佐佐纳恩岛南端",
+      "names": {
+        "zh": "佐佐纳恩岛南端",
+        "ja": "ゾーゾーナン島南端",
+        "en": "South Isle of Zozonan"
+      }
     },
     {
       "id": 33,
@@ -1473,7 +1863,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "风行者的残骸"
+      "nameZh": "风行者的残骸",
+      "names": {
+        "zh": "风行者的残骸",
+        "ja": "ウィンド・ウォーカーの残骸",
+        "en": "Wreckage of the Windwalker"
+      }
     },
     {
       "id": 34,
@@ -1497,7 +1892,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "佐佐纳恩岛北端"
+      "nameZh": "佐佐纳恩岛北端",
+      "names": {
+        "zh": "佐佐纳恩岛北端",
+        "ja": "ゾーゾーナン島北端",
+        "en": "North Isle of Zozonan"
+      }
     },
     {
       "id": 35,
@@ -1521,7 +1921,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "灰海1"
+      "nameZh": "灰海1",
+      "names": {
+        "zh": "灰海1",
+        "ja": "灰海01",
+        "en": "Sea of Ash 1"
+      }
     },
     {
       "id": 36,
@@ -1545,7 +1950,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "火葬炉海沟南端"
+      "nameZh": "火葬炉海沟南端",
+      "names": {
+        "zh": "火葬炉海沟南端",
+        "ja": "火葬炉海溝南端",
+        "en": "the Southern Charnel Trench"
+      }
     },
     {
       "id": 37,
@@ -1569,7 +1979,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "灰海2"
+      "nameZh": "灰海2",
+      "names": {
+        "zh": "灰海2",
+        "ja": "灰海02",
+        "en": "Sea of Ash 2"
+      }
     },
     {
       "id": 38,
@@ -1593,7 +2008,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "灰海3"
+      "nameZh": "灰海3",
+      "names": {
+        "zh": "灰海3",
+        "ja": "灰海03",
+        "en": "Sea of Ash 3"
+      }
     },
     {
       "id": 39,
@@ -1617,7 +2037,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "修道士墓碑"
+      "nameZh": "修道士墓碑",
+      "names": {
+        "zh": "修道士墓碑",
+        "ja": "修道士たちの墓標",
+        "en": "Ascetic's Demise"
+      }
     },
     {
       "id": 40,
@@ -1641,7 +2066,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "火葬炉海沟中部"
+      "nameZh": "火葬炉海沟中部",
+      "names": {
+        "zh": "火葬炉海沟中部",
+        "ja": "火葬炉海溝中腹",
+        "en": "the Central Charnel Trench"
+      }
     },
     {
       "id": 41,
@@ -1665,7 +2095,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "神父的岩窟"
+      "nameZh": "神父的岩窟",
+      "names": {
+        "zh": "神父的岩窟",
+        "ja": "神父の岩窟",
+        "en": "the Catacombs of the Father"
+      }
     },
     {
       "id": 42,
@@ -1689,7 +2124,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "灰海4"
+      "nameZh": "灰海4",
+      "names": {
+        "zh": "灰海4",
+        "ja": "灰海04",
+        "en": "Sea of Ash 4"
+      }
     },
     {
       "id": 43,
@@ -1713,7 +2153,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "沙砾海盆"
+      "nameZh": "沙砾海盆",
+      "names": {
+        "zh": "沙砾海盆",
+        "ja": "砂利の海盆",
+        "en": "the Midden Pit"
+      }
     },
     {
       "id": 44,
@@ -1737,7 +2182,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "单只手套岛"
+      "nameZh": "单只手套岛",
+      "names": {
+        "zh": "单只手套岛",
+        "ja": "片割れ手袋島",
+        "en": "the Lone Glove"
+      }
     },
     {
       "id": 45,
@@ -1761,7 +2211,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "破洞袜子岛"
+      "nameZh": "破洞袜子岛",
+      "names": {
+        "zh": "破洞袜子岛",
+        "ja": "穴あき靴下島",
+        "en": "Coldtoe Isle"
+      }
     },
     {
       "id": 46,
@@ -1785,7 +2240,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "走私客的交易场"
+      "nameZh": "走私客的交易场",
+      "names": {
+        "zh": "走私客的交易场",
+        "ja": "密輸業者の取引場",
+        "en": "Smuggler's Knot"
+      }
     },
     {
       "id": 47,
@@ -1809,7 +2269,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "磨破袍子岛"
+      "nameZh": "磨破袍子岛",
+      "names": {
+        "zh": "磨破袍子岛",
+        "ja": "擦り切れローブ島",
+        "en": "the Open Robe"
+      }
     },
     {
       "id": 48,
@@ -1833,7 +2298,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "商贸神的烟管"
+      "nameZh": "商贸神的烟管",
+      "names": {
+        "zh": "商贸神的烟管",
+        "ja": "ナルザルの煙管",
+        "en": "Nald'thal's Pipe"
+      }
     },
     {
       "id": 49,
@@ -1857,7 +2327,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": true,
-      "nameZh": "走锚海域"
+      "nameZh": "走锚海域",
+      "names": {
+        "zh": "走锚海域",
+        "ja": "走錨海域",
+        "en": "the Slipped Anchor"
+      }
     },
     {
       "id": 50,
@@ -1881,7 +2356,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "贪婪胃"
+      "nameZh": "贪婪胃",
+      "names": {
+        "zh": "贪婪胃",
+        "ja": "強欲の胃袋",
+        "en": "Glutton's Belly"
+      }
     },
     {
       "id": 51,
@@ -1905,7 +2385,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "蓝洞"
+      "nameZh": "蓝洞",
+      "names": {
+        "zh": "蓝洞",
+        "ja": "ブルーホール",
+        "en": "the Blue Hole"
+      }
     },
     {
       "id": 53,
@@ -1929,7 +2414,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "祭坛岛"
+      "nameZh": "祭坛岛",
+      "names": {
+        "zh": "祭坛岛",
+        "ja": "祭壇島",
+        "en": "the Isle of Sacrament"
+      }
     },
     {
       "id": 54,
@@ -1953,7 +2443,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "章鱼的陶罐"
+      "nameZh": "章鱼的陶罐",
+      "names": {
+        "zh": "章鱼的陶罐",
+        "ja": "蛸壺入江",
+        "en": "the Kraken's Tomb"
+      }
     },
     {
       "id": 55,
@@ -1977,7 +2472,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "翠浪海1"
+      "nameZh": "翠浪海1",
+      "names": {
+        "zh": "翠浪海1",
+        "ja": "翠浪海01",
+        "en": "Sea of Jade 1"
+      }
     },
     {
       "id": 56,
@@ -2001,7 +2501,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "恶魔章鱼的狩猎场"
+      "nameZh": "恶魔章鱼的狩猎场",
+      "names": {
+        "zh": "恶魔章鱼的狩猎场",
+        "ja": "ロゴトゥムヘレの狩場",
+        "en": "Rogo-Tumu-Here's Haunt"
+      }
     },
     {
       "id": 57,
@@ -2025,7 +2530,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "吸盘礁"
+      "nameZh": "吸盘礁",
+      "names": {
+        "zh": "吸盘礁",
+        "ja": "吸盤礁",
+        "en": "the Stone Barbs"
+      }
     },
     {
       "id": 58,
@@ -2049,7 +2559,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "恶魔章鱼的睡床"
+      "nameZh": "恶魔章鱼的睡床",
+      "names": {
+        "zh": "恶魔章鱼的睡床",
+        "ja": "ロゴトゥムヘレの寝蔵",
+        "en": "Rogo-Tumu-Here's Repose"
+      }
     },
     {
       "id": 59,
@@ -2073,7 +2588,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "海神的钓钩"
+      "nameZh": "海神的钓钩",
+      "names": {
+        "zh": "海神的钓钩",
+        "ja": "タナロアの釣針",
+        "en": "Tangaroa's Prow"
+      }
     },
     {
       "id": 60,
@@ -2097,7 +2617,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "翠浪海2"
+      "nameZh": "翠浪海2",
+      "names": {
+        "zh": "翠浪海2",
+        "ja": "翠浪海02",
+        "en": "Sea of Jade 2"
+      }
     },
     {
       "id": 61,
@@ -2121,7 +2646,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "盲目峡湾"
+      "nameZh": "盲目峡湾",
+      "names": {
+        "zh": "盲目峡湾",
+        "ja": "目隠し峡江",
+        "en": "the Blind Sound"
+      }
     },
     {
       "id": 62,
@@ -2145,7 +2675,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "翠浪海3"
+      "nameZh": "翠浪海3",
+      "names": {
+        "zh": "翠浪海3",
+        "ja": "翠浪海03",
+        "en": "Sea of Jade 3"
+      }
     },
     {
       "id": 63,
@@ -2169,7 +2704,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "穆厄吉恩的锻铁场"
+      "nameZh": "穆厄吉恩的锻铁场",
+      "names": {
+        "zh": "穆厄吉恩的锻铁场",
+        "ja": "ムールギンの鍛冶場",
+        "en": "Moergynn's Forge"
+      }
     },
     {
       "id": 64,
@@ -2193,7 +2733,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "海神的浮标"
+      "nameZh": "海神的浮标",
+      "names": {
+        "zh": "海神的浮标",
+        "ja": "タナロアの浮標",
+        "en": "Tangaroa's Beacon"
+      }
     },
     {
       "id": 65,
@@ -2217,7 +2762,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "翠浪海4"
+      "nameZh": "翠浪海4",
+      "names": {
+        "zh": "翠浪海4",
+        "ja": "翠浪海04",
+        "en": "Sea of Jade 4"
+      }
     },
     {
       "id": 66,
@@ -2241,7 +2791,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "海藻树林"
+      "nameZh": "海藻树林",
+      "names": {
+        "zh": "海藻树林",
+        "ja": "海藻樹林",
+        "en": "the Forest of Kelp"
+      }
     },
     {
       "id": 67,
@@ -2265,7 +2820,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "翠浪海5"
+      "nameZh": "翠浪海5",
+      "names": {
+        "zh": "翠浪海5",
+        "ja": "翠浪海05",
+        "en": "Sea of Jade 5"
+      }
     },
     {
       "id": 68,
@@ -2289,7 +2849,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "钝刀切岸"
+      "nameZh": "钝刀切岸",
+      "names": {
+        "zh": "钝刀切岸",
+        "ja": "なまくら切岸",
+        "en": "Bladefall Chasm"
+      }
     },
     {
       "id": 69,
@@ -2313,7 +2878,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "驻风港"
+      "nameZh": "驻风港",
+      "names": {
+        "zh": "驻风港",
+        "ja": "風の休所",
+        "en": "Stormport"
+      }
     },
     {
       "id": 70,
@@ -2337,7 +2907,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "龙骨塚"
+      "nameZh": "龙骨塚",
+      "names": {
+        "zh": "龙骨塚",
+        "ja": "竜骨溜まり",
+        "en": "Wyrm's Rest"
+      }
     },
     {
       "id": 71,
@@ -2361,7 +2936,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "翠浪海6"
+      "nameZh": "翠浪海6",
+      "names": {
+        "zh": "翠浪海6",
+        "ja": "翠浪海06",
+        "en": "Sea of Jade 6"
+      }
     },
     {
       "id": 72,
@@ -2385,7 +2965,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": true,
-      "nameZh": "海兽的灵园"
+      "nameZh": "海兽的灵园",
+      "names": {
+        "zh": "海兽的灵园",
+        "ja": "海獣の霊園",
+        "en": "the Devil's Crypt"
+      }
     },
     {
       "id": 74,
@@ -2409,7 +2994,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "耳蜡渔场"
+      "nameZh": "耳蜡渔场",
+      "names": {
+        "zh": "耳蜡渔场",
+        "ja": "耳蝋漁場",
+        "en": "Mastbound's Bounty"
+      }
     },
     {
       "id": 75,
@@ -2433,7 +3023,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "妖歌海1"
+      "nameZh": "妖歌海1",
+      "names": {
+        "zh": "妖歌海1",
+        "ja": "セイレーン海01",
+        "en": "Sirensong Sea 1"
+      }
     },
     {
       "id": 76,
@@ -2457,7 +3052,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "妖歌海2"
+      "nameZh": "妖歌海2",
+      "names": {
+        "zh": "妖歌海2",
+        "ja": "セイレーン海02",
+        "en": "Sirensong Sea 2"
+      }
     },
     {
       "id": 77,
@@ -2481,7 +3081,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "花丛岛"
+      "nameZh": "花丛岛",
+      "names": {
+        "zh": "花丛岛",
+        "ja": "アンテモエッサ島",
+        "en": "Anthemoessa"
+      }
     },
     {
       "id": 78,
@@ -2505,7 +3110,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "海魔之口"
+      "nameZh": "海魔之口",
+      "names": {
+        "zh": "海魔之口",
+        "ja": "海魔の口",
+        "en": "Magos Trench"
+      }
     },
     {
       "id": 79,
@@ -2529,7 +3139,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "漂流海域"
+      "nameZh": "漂流海域",
+      "names": {
+        "zh": "漂流海域",
+        "ja": "漂流海域",
+        "en": "Thrall's Unrest"
+      }
     },
     {
       "id": 80,
@@ -2553,7 +3168,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "告死礁"
+      "nameZh": "告死礁",
+      "names": {
+        "zh": "告死礁",
+        "ja": "告死礁",
+        "en": "Crow's Drop"
+      }
     },
     {
       "id": 81,
@@ -2577,7 +3197,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "妖歌海3"
+      "nameZh": "妖歌海3",
+      "names": {
+        "zh": "妖歌海3",
+        "ja": "セイレーン海03",
+        "en": "Sirensong Sea 3"
+      }
     },
     {
       "id": 82,
@@ -2601,7 +3226,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "花丛潜流"
+      "nameZh": "花丛潜流",
+      "names": {
+        "zh": "花丛潜流",
+        "ja": "アンテモエッサ海廊",
+        "en": "the Anthemoessa Undertow"
+      }
     },
     {
       "id": 83,
@@ -2625,7 +3255,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "妖歌海4"
+      "nameZh": "妖歌海4",
+      "names": {
+        "zh": "妖歌海4",
+        "ja": "セイレーン海04",
+        "en": "Sirensong Sea 4"
+      }
     },
     {
       "id": 84,
@@ -2649,7 +3284,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "涡纹海峡"
+      "nameZh": "涡纹海峡",
+      "names": {
+        "zh": "涡纹海峡",
+        "ja": "渦紋海峡",
+        "en": "Seafoam Tide"
+      }
     },
     {
       "id": 85,
@@ -2673,7 +3313,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "鸟嘴湾"
+      "nameZh": "鸟嘴湾",
+      "names": {
+        "zh": "鸟嘴湾",
+        "ja": "鳥嘴湾",
+        "en": "the Beak"
+      }
     },
     {
       "id": 86,
@@ -2697,7 +3342,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "海魔牢狱"
+      "nameZh": "海魔牢狱",
+      "names": {
+        "zh": "海魔牢狱",
+        "ja": "海魔の牢獄",
+        "en": "Seafarer's End"
+      }
     },
     {
       "id": 87,
@@ -2721,7 +3371,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "废弃流放岛"
+      "nameZh": "废弃流放岛",
+      "names": {
+        "zh": "废弃流放岛",
+        "ja": "放棄された流刑島",
+        "en": "Drifter's Decay"
+      }
     },
     {
       "id": 88,
@@ -2745,7 +3400,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "卢加特海滩"
+      "nameZh": "卢加特海滩",
+      "names": {
+        "zh": "卢加特海滩",
+        "ja": "ルガトの浜",
+        "en": "Lugat's Landing"
+      }
     },
     {
       "id": 89,
@@ -2769,7 +3429,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "积冰泉"
+      "nameZh": "积冰泉",
+      "names": {
+        "zh": "积冰泉",
+        "ja": "積氷泉",
+        "en": "the Frozen Spring"
+      }
     },
     {
       "id": 90,
@@ -2793,7 +3458,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "妖歌海5"
+      "nameZh": "妖歌海5",
+      "names": {
+        "zh": "妖歌海5",
+        "ja": "セイレーン海05",
+        "en": "Sirensong Sea 5"
+      }
     },
     {
       "id": 91,
@@ -2817,7 +3487,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "涡纹岛"
+      "nameZh": "涡纹岛",
+      "names": {
+        "zh": "涡纹岛",
+        "ja": "渦紋島",
+        "en": "Tidewind Isle"
+      }
     },
     {
       "id": 92,
@@ -2841,7 +3516,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "赤血海丘"
+      "nameZh": "赤血海丘",
+      "names": {
+        "zh": "赤血海丘",
+        "ja": "赤血海丘",
+        "en": "Bloodbreak"
+      }
     },
     {
       "id": 93,
@@ -2865,7 +3545,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": true,
-      "nameZh": "海晶泉"
+      "nameZh": "海晶泉",
+      "names": {
+        "zh": "海晶泉",
+        "ja": "海晶泉",
+        "en": "the Crystal Font"
+      }
     },
     {
       "id": 95,
@@ -2889,7 +3574,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "垂藤架"
+      "nameZh": "垂藤架",
+      "names": {
+        "zh": "垂藤架",
+        "ja": "誘う藤棚",
+        "en": "Weeping Trellis"
+      }
     },
     {
       "id": 96,
@@ -2913,7 +3603,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "白化珊瑚岛"
+      "nameZh": "白化珊瑚岛",
+      "names": {
+        "zh": "白化珊瑚岛",
+        "ja": "白化した島",
+        "en": "the Forsaken Isle"
+      }
     },
     {
       "id": 97,
@@ -2937,7 +3632,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "候鸟的浅滩"
+      "nameZh": "候鸟的浅滩",
+      "names": {
+        "zh": "候鸟的浅滩",
+        "ja": "漂鳥の浅瀬",
+        "en": "Fortune's Ford"
+      }
     },
     {
       "id": 98,
@@ -2961,7 +3661,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "紫礁海1"
+      "nameZh": "紫礁海1",
+      "names": {
+        "zh": "紫礁海1",
+        "ja": "紫礁海01",
+        "en": "Lilac Sea 1"
+      }
     },
     {
       "id": 99,
@@ -2985,7 +3690,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "海鸥岛"
+      "nameZh": "海鸥岛",
+      "names": {
+        "zh": "海鸥岛",
+        "ja": "ラルス島",
+        "en": "Runners' Reach"
+      }
     },
     {
       "id": 100,
@@ -3009,7 +3719,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "桔梗海沟中央"
+      "nameZh": "桔梗海沟中央",
+      "names": {
+        "zh": "桔梗海沟中央",
+        "ja": "桔梗海溝中央",
+        "en": "Bellflower Flood"
+      }
     },
     {
       "id": 101,
@@ -3033,7 +3748,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "紫礁海2"
+      "nameZh": "紫礁海2",
+      "names": {
+        "zh": "紫礁海2",
+        "ja": "紫礁海02",
+        "en": "Lilac Sea 2"
+      }
     },
     {
       "id": 102,
@@ -3057,7 +3777,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "紫礁海3"
+      "nameZh": "紫礁海3",
+      "names": {
+        "zh": "紫礁海3",
+        "ja": "紫礁海03",
+        "en": "Lilac Sea 3"
+      }
     },
     {
       "id": 103,
@@ -3081,7 +3806,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "桔梗海沟西北"
+      "nameZh": "桔梗海沟西北",
+      "names": {
+        "zh": "桔梗海沟西北",
+        "ja": "桔梗海溝北西",
+        "en": "northwest Bellflower"
+      }
     },
     {
       "id": 104,
@@ -3105,7 +3835,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "花冠岛"
+      "nameZh": "花冠岛",
+      "names": {
+        "zh": "花冠岛",
+        "ja": "花冠島",
+        "en": "Corolla Isle"
+      }
     },
     {
       "id": 105,
@@ -3129,7 +3864,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "桔梗海沟东南"
+      "nameZh": "桔梗海沟东南",
+      "names": {
+        "zh": "桔梗海沟东南",
+        "ja": "桔梗海溝南東",
+        "en": "southeast Bellflower"
+      }
     },
     {
       "id": 106,
@@ -3153,7 +3893,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "盛放礁湖"
+      "nameZh": "盛放礁湖",
+      "names": {
+        "zh": "盛放礁湖",
+        "ja": "咲き誇る礁池",
+        "en": "the floral reef"
+      }
     },
     {
       "id": 107,
@@ -3177,7 +3922,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "翼瓣岛"
+      "nameZh": "翼瓣岛",
+      "names": {
+        "zh": "翼瓣岛",
+        "ja": "翼弁島",
+        "en": "Wingsreach"
+      }
     },
     {
       "id": 108,
@@ -3201,7 +3951,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "旗瓣岛"
+      "nameZh": "旗瓣岛",
+      "names": {
+        "zh": "旗瓣岛",
+        "ja": "旗弁島",
+        "en": "the Floating Standard"
+      }
     },
     {
       "id": 109,
@@ -3225,7 +3980,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "蝴蝶圆湾"
+      "nameZh": "蝴蝶圆湾",
+      "names": {
+        "zh": "蝴蝶圆湾",
+        "ja": "胡蝶の円湾",
+        "en": "the Fluttering Bay"
+      }
     },
     {
       "id": 110,
@@ -3249,7 +4009,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "紫礁海4"
+      "nameZh": "紫礁海4",
+      "names": {
+        "zh": "紫礁海4",
+        "ja": "紫礁海04",
+        "en": "Lilac Sea 4"
+      }
     },
     {
       "id": 111,
@@ -3273,7 +4038,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "龙骨瓣岛"
+      "nameZh": "龙骨瓣岛",
+      "names": {
+        "zh": "龙骨瓣岛",
+        "ja": "舟弁島",
+        "en": "Proudkeel"
+      }
     },
     {
       "id": 112,
@@ -3297,7 +4067,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "多迪海底峡谷东"
+      "nameZh": "多迪海底峡谷东",
+      "names": {
+        "zh": "多迪海底峡谷东",
+        "ja": "ドディー海底谷東",
+        "en": "east Dodie's Abyss"
+      }
     },
     {
       "id": 113,
@@ -3321,7 +4096,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "紫礁海5"
+      "nameZh": "紫礁海5",
+      "names": {
+        "zh": "紫礁海5",
+        "ja": "紫礁海05",
+        "en": "Lilac Sea 5"
+      }
     },
     {
       "id": 114,
@@ -3345,7 +4125,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": true,
-      "nameZh": "多迪海底峡谷西"
+      "nameZh": "多迪海底峡谷西",
+      "names": {
+        "zh": "多迪海底峡谷西",
+        "ja": "ドディー海底谷西",
+        "en": "west Dodie's Abyss"
+      }
     },
     {
       "id": 116,
@@ -3369,7 +4154,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "苍茫浅滩"
+      "nameZh": "苍茫浅滩",
+      "names": {
+        "zh": "苍茫浅滩",
+        "ja": "インディゴ・シャロウ",
+        "en": "the Indigo Shallows"
+      }
     },
     {
       "id": 117,
@@ -3393,7 +4183,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "探险家的中继基地"
+      "nameZh": "探险家的中继基地",
+      "names": {
+        "zh": "探险家的中继基地",
+        "ja": "探検家の中継基地",
+        "en": "Voyagers' Reprieve"
+      }
     },
     {
       "id": 118,
@@ -3417,7 +4212,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "绀色海底陆架北"
+      "nameZh": "绀色海底陆架北",
+      "names": {
+        "zh": "绀色海底陆架北",
+        "ja": "紺色海底棚北",
+        "en": "north Delphinium Seashelf"
+      }
     },
     {
       "id": 119,
@@ -3441,7 +4241,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "起雨海底谷"
+      "nameZh": "起雨海底谷",
+      "names": {
+        "zh": "起雨海底谷",
+        "ja": "雨生みの海底谷",
+        "en": "Rainbringer Rift"
+      }
     },
     {
       "id": 120,
@@ -3465,7 +4270,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "南苍茫洋1"
+      "nameZh": "南苍茫洋1",
+      "names": {
+        "zh": "南苍茫洋1",
+        "ja": "南蒼茫洋01",
+        "en": "south Indigo Deep 1"
+      }
     },
     {
       "id": 121,
@@ -3489,7 +4299,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "碧蓝海心"
+      "nameZh": "碧蓝海心",
+      "names": {
+        "zh": "碧蓝海心",
+        "ja": "セントラルブルー",
+        "en": "the Central Blue"
+      }
     },
     {
       "id": 122,
@@ -3513,7 +4328,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "南苍茫洋2"
+      "nameZh": "南苍茫洋2",
+      "names": {
+        "zh": "南苍茫洋2",
+        "ja": "南蒼茫洋02",
+        "en": "south Indigo Deep 2"
+      }
     },
     {
       "id": 123,
@@ -3537,7 +4357,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "钩爪岛"
+      "nameZh": "钩爪岛",
+      "names": {
+        "zh": "钩爪岛",
+        "ja": "鉤爪島",
+        "en": "the Talon"
+      }
     },
     {
       "id": 124,
@@ -3561,7 +4386,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "碧蓝海心南"
+      "nameZh": "碧蓝海心南",
+      "names": {
+        "zh": "碧蓝海心南",
+        "ja": "セントラルブルー南",
+        "en": "southern Central Blue"
+      }
     },
     {
       "id": 125,
@@ -3585,7 +4415,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "南苍茫洋3"
+      "nameZh": "南苍茫洋3",
+      "names": {
+        "zh": "南苍茫洋3",
+        "ja": "南蒼茫洋03",
+        "en": "south Indigo Deep 3"
+      }
     },
     {
       "id": 126,
@@ -3609,7 +4444,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "钩爪岛近海"
+      "nameZh": "钩爪岛近海",
+      "names": {
+        "zh": "钩爪岛近海",
+        "ja": "鉤爪島沖合",
+        "en": "the Talonspoint Depths"
+      }
     },
     {
       "id": 127,
@@ -3633,7 +4473,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "碧眼岛"
+      "nameZh": "碧眼岛",
+      "names": {
+        "zh": "碧眼岛",
+        "ja": "碧眼島",
+        "en": "Saltfarer's Eye"
+      }
     },
     {
       "id": 128,
@@ -3657,7 +4502,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "星痕水道浅部"
+      "nameZh": "星痕水道浅部",
+      "names": {
+        "zh": "星痕水道浅部",
+        "ja": "星削水道浅部",
+        "en": "Startail shallows"
+      }
     },
     {
       "id": 129,
@@ -3681,7 +4531,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "月缺岛"
+      "nameZh": "月缺岛",
+      "names": {
+        "zh": "月缺岛",
+        "ja": "欠月島",
+        "en": "Moonshadow Isle"
+      }
     },
     {
       "id": 130,
@@ -3705,7 +4560,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "绿宝石渊"
+      "nameZh": "绿宝石渊",
+      "names": {
+        "zh": "绿宝石渊",
+        "ja": "エメラルド・ディープ",
+        "en": "Emerald Drop"
+      }
     },
     {
       "id": 131,
@@ -3729,7 +4589,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "南苍茫洋4"
+      "nameZh": "南苍茫洋4",
+      "names": {
+        "zh": "南苍茫洋4",
+        "ja": "南蒼茫洋04",
+        "en": "south Indigo Deep 4"
+      }
     },
     {
       "id": 132,
@@ -3753,7 +4618,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "绀色海底陆架南"
+      "nameZh": "绀色海底陆架南",
+      "names": {
+        "zh": "绀色海底陆架南",
+        "ja": "紺色海底棚南",
+        "en": "south Delphinium Seashelf"
+      }
     },
     {
       "id": 133,
@@ -3777,7 +4647,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "星痕水道中部"
+      "nameZh": "星痕水道中部",
+      "names": {
+        "zh": "星痕水道中部",
+        "ja": "星削水道中部",
+        "en": "Startail shelf"
+      }
     },
     {
       "id": 134,
@@ -3801,7 +4676,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "起风海底谷"
+      "nameZh": "起风海底谷",
+      "names": {
+        "zh": "起风海底谷",
+        "ja": "風生みの海底谷",
+        "en": "Cradle of the Winds"
+      }
     },
     {
       "id": 135,
@@ -3825,7 +4705,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": true,
-      "nameZh": "星痕水道深部"
+      "nameZh": "星痕水道深部",
+      "names": {
+        "zh": "星痕水道深部",
+        "ja": "星削水道深部",
+        "en": "Startail Trench"
+      }
     },
     {
       "id": 137,
@@ -3849,7 +4734,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "黑血域东"
+      "nameZh": "黑血域东",
+      "names": {
+        "zh": "黑血域东",
+        "ja": "黒き血の溜まり東",
+        "en": "eastern Blackblood Wells"
+      }
     },
     {
       "id": 138,
@@ -3873,7 +4763,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "海狼港"
+      "nameZh": "海狼港",
+      "names": {
+        "zh": "海狼港",
+        "ja": "海狼たちの港",
+        "en": "Sea Wolf Cove"
+      }
     },
     {
       "id": 139,
@@ -3897,7 +4792,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "手斧岛南端"
+      "nameZh": "手斧岛南端",
+      "names": {
+        "zh": "手斧岛南端",
+        "ja": "ハンドビルト島南端",
+        "en": "southernmost Hanthbyrt"
+      }
     },
     {
       "id": 140,
@@ -3921,7 +4821,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "眼湖"
+      "nameZh": "眼湖",
+      "names": {
+        "zh": "眼湖",
+        "ja": "ウーヤ・セイク湖",
+        "en": "Oeyaseik"
+      }
     },
     {
       "id": 141,
@@ -3945,7 +4850,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "手斧岛东北"
+      "nameZh": "手斧岛东北",
+      "names": {
+        "zh": "手斧岛东北",
+        "ja": "ハンドビルト島北東",
+        "en": "northeast Hanthbyrt"
+      }
     },
     {
       "id": 142,
@@ -3969,7 +4879,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "欢庆海岸"
+      "nameZh": "欢庆海岸",
+      "names": {
+        "zh": "欢庆海岸",
+        "ja": "フェイエルの浜",
+        "en": "Vyrstrant"
+      }
     },
     {
       "id": 143,
@@ -3993,7 +4908,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "尖牙角远岸"
+      "nameZh": "尖牙角远岸",
+      "names": {
+        "zh": "尖牙角远岸",
+        "ja": "牙の岬沖",
+        "en": "the Sunken Jawbone"
+      }
     },
     {
       "id": 144,
@@ -4017,7 +4937,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "欢庆远岸"
+      "nameZh": "欢庆远岸",
+      "names": {
+        "zh": "欢庆远岸",
+        "ja": "フェイエルの浜沖",
+        "en": "the Vyrstrant Dropoff"
+      }
     },
     {
       "id": 145,
@@ -4041,7 +4966,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "斧槽湾"
+      "nameZh": "斧槽湾",
+      "names": {
+        "zh": "斧槽湾",
+        "ja": "斧筋湾",
+        "en": "Axeblade Bight"
+      }
     },
     {
       "id": 146,
@@ -4065,7 +4995,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "海鹦筑巢地"
+      "nameZh": "海鹦筑巢地",
+      "names": {
+        "zh": "海鹦筑巢地",
+        "ja": "パフィン営巣地",
+        "en": "the Puffin Assembly"
+      }
     },
     {
       "id": 147,
@@ -4089,7 +5024,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "原初海沟南部"
+      "nameZh": "原初海沟南部",
+      "names": {
+        "zh": "原初海沟南部",
+        "ja": "エルスレント海溝南部",
+        "en": "southern Aerslaent Plunge"
+      }
     },
     {
       "id": 148,
@@ -4113,7 +5053,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "祝福海潮回廊"
+      "nameZh": "祝福海潮回廊",
+      "names": {
+        "zh": "祝福海潮回廊",
+        "ja": "ソルク・ロンの回廊",
+        "en": "the Solkronn Gallery"
+      }
     },
     {
       "id": 149,
@@ -4137,7 +5082,12 @@
       "unlockKind": "point",
       "needsSub": false,
       "opensMap": false,
-      "nameZh": "海狼的斩痕中央"
+      "nameZh": "海狼的斩痕中央",
+      "names": {
+        "zh": "海狼的斩痕中央",
+        "ja": "海狼の太刀筋中央",
+        "en": "central Den of the Greatsword"
+      }
     }
   ],
   "ranks": [
